@@ -1,0 +1,46 @@
+[{
+        "name": "7-Eleven",
+        "franchise": "7-Eleven",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "USD"
+        },
+        "address": "2065 White Oak Ln, Santa Clara, CA 95051, USA",
+        "location": {
+            "type": "Point",
+            "coordinates": [-121.9963813, 37.3605649]
+        }
+    },
+    {
+        "name": "7-Eleven",
+        "franchise": "7-Eleven",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "USD"
+        },
+        "address": "3580 Monroe St, Santa Clara, CA 95051, USA",
+        "location": {
+            "type": "Point",
+            "coordinates": [-121.9951399, 37.3663817]
+        }
+    },
+    {
+        "name": "7-Eleven",
+        "franchise": "7-Eleven",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "USD"
+        },
+        "address": "3565 Benton St, Santa Clara, CA 95051, USA",
+        "location": {
+            "type": "Point",
+            "coordinates": [-121.9943855, 37.3459357]
+        }
+    }
+]
