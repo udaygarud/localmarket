@@ -1,46 +1,317 @@
 [{
-        "name": "7-Eleven",
-        "franchise": "7-Eleven",
+        "name": "City Wines",
+        "franchise": "City Wines",
         "capabilities": {
             "liquorSold": true,
             "foodServed": false,
             "listedCategories": ["food & beverage"],
-            "currency": "USD"
+            "currency": "INR"
         },
-        "address": "2065 White Oak Ln, Santa Clara, CA 95051, USA",
+        "address": "Haridwar, Integrated Industrial Estate, Sector 12, BHEL Township, Haridwar, Uttarakhand 249403",
         "location": {
             "type": "Point",
-            "coordinates": [-121.9963813, 37.3605649]
+            "coordinates": [29.9484701, 78.0753688]
         }
     },
     {
-        "name": "7-Eleven",
-        "franchise": "7-Eleven",
+        "name": "Wineyards",
+        "franchise": "Wineyards",
         "capabilities": {
             "liquorSold": true,
             "foodServed": false,
             "listedCategories": ["food & beverage"],
-            "currency": "USD"
+            "currency": "INR"
         },
-        "address": "3580 Monroe St, Santa Clara, CA 95051, USA",
+        "address": "Pentagon mall, Shop no. 9, Sector 12, BHEL Township, Uttarakhand 249403",
         "location": {
             "type": "Point",
-            "coordinates": [-121.9951399, 37.3663817]
+            "coordinates": [29.9485389, 78.0755854]
         }
     },
     {
-        "name": "7-Eleven",
-        "franchise": "7-Eleven",
+        "name": "Wine and Beer Shop Bhadrabad",
+        "franchise": "Wine and Beer Shop Bhadrabad",
         "capabilities": {
             "liquorSold": true,
             "foodServed": false,
             "listedCategories": ["food & beverage"],
-            "currency": "USD"
+            "currency": "INR"
         },
-        "address": "3565 Benton St, Santa Clara, CA 95051, USA",
+        "address": "Salempur Road, Industrial Area, Haridwar, Uttarakhand 249402",
         "location": {
             "type": "Point",
-            "coordinates": [-121.9943855, 37.3459357]
+            "coordinates": [29.9294147, 78.0517781]
+        }
+    },
+    {
+        "name": "Beer And Wine Shop",
+        "franchise": "Beer And Wine Shop",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Garhmeer pur Road, Shivdas Pur Urf Teliwala, Uttarakhand 249402",
+        "location": {
+            "type": "Point",
+            "coordinates": [29.956868, 77.9912996]
+        }
+    },
+    {
+        "name": "Pentagon mall shops",
+        "franchise": "Pentagon mall shops",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Ambala-Dehradun-Haridwar Rd, Motichur, Haridwar, Uttarakhand 249411",
+        "location": {
+            "type": "Point",
+            "coordinates": [29.9912554, 78.1893969]
+        }
+    },
+    {
+        "name": "English Wine and Beer Shop",
+        "franchise": "English Wine and Beer Shop",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Kotdwara - Lansdowne Road, Kamla Nehru Marg, Uttarakhand 246127",
+        "location": {
+            "type": "Point",
+            "coordinates": [29.805646, 78.6102676]
+        }
+    }, 
+    {
+        "name": "Beer Shop Kamrajpur",
+        "franchise": "Beer Shop Kamrajpur",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Chandok-Bhaguwala Bypass Rd, Telinangli, Uttar Pradesh 246732",
+        "location": {
+            "type": "Point",
+            "coordinates": [29.614431, 78.1664371]
+        }
+    }, 
+    {
+        "name": "Capital Stores",
+        "franchise": "Capital Stores",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "184, Walkeshwar Road, Malabar Hill, Mumbai, Maharashtra 400006",
+        "location": {
+            "type": "Point",
+            "coordinates": [18.9478029, 72.7972485]
+        }
+    }, 
+    {
+        "name": "Sante Beer & Wines",
+        "franchise": "Sante Beer & Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Shop No 18, Krishanaraj Society, Malabar Hill, Mumbai, Maharashtra 400006",
+        "location": {
+            "type": "Point",
+            "coordinates": [18.9534593, 72.8031259]
+        }
+    }, 
+    {
+        "name": "Framroze And Company",
+        "franchise": "Framroze And Company",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "108, Near White House, Malabar Hill, Mumbai, Maharashtra 400006",
+        "location": {
+            "type": "Point",
+            "coordinates": [18.9499366, 72.8013509]
+        }
+    }, 
+    {
+        "name": "Warden Wine & Liquor",
+        "franchise": "Warden Wine & Liquor",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "106, Dhan Abaad Building, Cumballa Hill, Mumbai, Maharashtra 400036",
+        "location": {
+            "type": "Point",
+            "coordinates": [18.9648072, 72.8039988]
+        }
+    }, 
+    {
+        "name": "Sovereign Wines",
+        "franchise": "Sovereign Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Shop No. 10, Sukh Sagar, NS Patkar Marg, Girgaon Chowpatty Mumbai, Maharashtra 400007",
+        "location": {
+            "type": "Point",
+            "coordinates": [18.9563592, 72.8134024]
+        }
+    }, 
+    {
+        "name": "Nita Wines",
+        "franchise": "Nita Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "1927, Industrial Assurance Building, Churchgate, Mumbai, Maharashtra 400020",
+        "location": {
+            "type": "Point",
+            "coordinates": [18.9326237, 72.8271782]
+        }
+    }, 
+    {
+        "name": "Quality Wines",
+        "franchise": "Quality Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "388, Majestic Mansion,  Girgaon, Mumbai, Maharashtra 400004",
+        "location": {
+            "type": "Point",
+            "coordinates": [18.9583378, 72.8210521]
+        }
+    }, 
+    {
+        "name": "Acme Wines",
+        "franchise": "Acme Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "B Wing, Shop no 1 & 2 Jai Bhavani Society,Jogeshwari East, Mumbai, Maharashtra 400060",
+        "location": {
+            "type": "Point",
+            "coordinates": [19.139733, 72.8592467]
+        }
+    }, 
+    {
+        "name": "Star Wines",
+        "franchise": "Star Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Opposite Janshakti Police Chowki,Jogeshwari East, Mumbai, Maharashtra 400060",
+        "location": {
+            "type": "Point",
+            "coordinates": [19.1355393,72.8589731]
+        }
+    }, 
+    {
+        "name": "Dheeraj Beer Wine Shop",
+        "franchise": "Dheeraj Beer Wine Shop",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Station Rd, Jogeshwari East, Mumbai, Maharashtra 400060",
+        "location": {
+            "type": "Point",
+            "coordinates": [19.1356431, 72.8586271]
+        }
+    }, 
+    {
+        "name": "Amrut Wines",
+        "franchise": "Amrut Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Near Western Ex.Highway, Jogeshwari East, Mumbai, Maharashtra 400060",
+        "location": {
+            "type": "Point",
+            "coordinates": [19.1367328, 72.8543571]
+        }
+    }, 
+    {
+        "name": "Hitha Wines",
+        "franchise": "Hitha Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "The Hindu Friends Society Marg, Jogeshwari East, Mumbai, Maharashtra 400060",
+        "location": {
+            "type": "Point",
+            "coordinates": [19.1347512, 72.8495076]
+        }
+    }, 
+    {
+        "name": "N R Wines",
+        "franchise": "N R Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "5, Swami Vivekananda Rd,Jogeshwari West, Mumbai, Maharashtra 400047",
+        "location": {
+            "type": "Point",
+            "coordinates": [19.134812, 72.8480136]
+        }
+    }, 
+    {
+        "name": "Enjay Wines",
+        "franchise": "Enjay Wines",
+        "capabilities": {
+            "liquorSold": true,
+            "foodServed": false,
+            "listedCategories": ["food & beverage"],
+            "currency": "INR"
+        },
+        "address": "Takshila, Shop No 1, Building No.1, Andheri East, Mumbai, Maharashtra 400093",
+        "location": {
+            "type": "Point",
+            "coordinates": [19.1298554, 72.8682187]
         }
     }
+    
 ]

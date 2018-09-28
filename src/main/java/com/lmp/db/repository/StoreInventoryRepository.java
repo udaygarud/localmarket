@@ -24,4 +24,6 @@ public interface StoreInventoryRepository
   public Page<StoreItemEntity> findAllByStoreIdInAndItemIdInAndOnSaleTrue(List<String> storeIds, List<String> ids,
       Pageable page);
 
+  public List<StoreItemEntity> findByItemId(String itemId);
+
 }

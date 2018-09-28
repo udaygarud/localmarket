@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.lmp.app.entity.Inventory;
 import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ShoppingCart.CartItem;
 import com.lmp.app.exceptions.ItemNotInStockException;
@@ -77,8 +78,22 @@ public class StoreInventoryService {
       } else {
         items = repo.findAllByStoreIdInAndItemIdIn(storeIds, ids, new PageRequest(0, sRequest.getRows()));
       }
-      return SearchResponse.buildStoreInventoryResponse(items, docs.getTotalElements(), sRequest.getPage(), v2);
+      Map<String,List<String>> storemap = new HashMap<>();
+      for(StoreItemEntity ie : items) {
+        List<String> Dbstores = getStores(ie.getItem().getId());
+        List<String> filteredstores = new ArrayList<>();
+        Dbstores.forEach(i -> {
+          if(storeIds.contains(i)){
+            filteredstores.add(i);
+          }
+        });
+        storemap.put(ie.getId(), filteredstores); 
+
+       }
+      //storeService.getStores("5bade68f11632a18ad6e768f");
+      return SearchResponse.buildStoreInventoryResponse(items, docs.getTotalElements(), sRequest.getPage(), v2 ,storemap);
     } else {
+      
       // search for all within store
       if (sRequest.isOnSaleRequest()) {
         items = repo.findAllByStoreIdInAndOnSaleTrue(storeIds, sRequest.pageRequesst());
@@ -86,7 +101,18 @@ public class StoreInventoryService {
         items = repo.findAllByStoreIdIn(storeIds, sRequest.pageRequesst());
       }
     }
-    return SearchResponse.buildStoreInventoryResponse(items, v2);
+    Map<String,List<String>> storemap = new HashMap<>();
+      for(StoreItemEntity ie : items) {
+        List<String> Dbstores = getStores(ie.getItem().getId());
+        List<String> filteredstores = new ArrayList<>();
+        Dbstores.forEach(i -> {
+          if(storeIds.contains(i)){
+            filteredstores.add(i);
+          }
+        });
+        storemap.put(ie.getId(), filteredstores);
+       }
+    return SearchResponse.buildStoreInventoryResponse(items, v2,storemap);
   }
 
   @Cacheable("store-items")
@@ -107,6 +133,7 @@ public class StoreInventoryService {
     Page<ItemDoc> docs = null;
     if (sRequest.isSolrSearchNeeded()) {
       // search solr and then mongo for this request
+      
       docs = searchSolr(sRequest, storeIdsToSearch);
       if(docs == null || docs.getTotalElements() == 0) {
         return SearchResponse.empty();
@@ -136,6 +163,21 @@ public class StoreInventoryService {
     });
     return map;
   }
+
+   public List<String> getStores(String itemid){
+    List<StoreItemEntity> result = repo.findByItemId(itemid);
+    List<String> onlyStoreid = new ArrayList<>();
+    if(result!=null){
+      result.forEach(item ->{
+        onlyStoreid.add(item.getStoreId());
+      });
+      return onlyStoreid;
+    }else{
+      return null;
+    }
+    
+  } 
+  
   
   public void verifyItemStock(List<CartItem> items) {
     if(items == null) {
@@ -183,4 +225,5 @@ public class StoreInventoryService {
     repo.save(item);
     return true;
   }
+
 }
