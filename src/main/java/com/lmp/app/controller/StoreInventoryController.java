@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.lmp.app.model.BaseResponse;
+import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.ResponseFilter;
 import com.lmp.app.model.SearchRequest;
 import com.lmp.app.model.UploadInventory;
@@ -15,6 +16,7 @@ import com.lmp.app.service.StoreInventoryService;
 import com.lmp.app.utils.ValidationErrorBuilder;
 import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.StoreItemEntity;
+import com.lmp.db.repository.StoreInventoryRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreInventoryController extends BaseController {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+  @Autowired
+  private StoreInventoryRepository siRepo;
   @Autowired
   private StoreInventoryService service;
   @Autowired
@@ -118,10 +121,26 @@ public class StoreInventoryController extends BaseController {
     }
     logger.debug("no stores found nearby lat {} & lng {}", uploadRequest.toString());
     ItemEntity response = itemservice.findByUpc(uploadRequest.getUpc());
+
     StoreItemEntity item = service.findByStoreIdanditemid(uploadRequest.getStoreId(),response.getId());
+    if(item == null){
+      StoreItemEntity sItem = new StoreItemEntity();
+      long time = System.currentTimeMillis();
+        sItem.setStoreId(uploadRequest.getStoreId());
+        sItem.getItem().setId(response.getId());
+        sItem.setStock(0);
+        sItem.setAdded(time);
+        sItem.setUpdated(time);
+        sItem.setListPrice((float)uploadRequest.getListPrice()); // min 0.6 factor for price
+        sItem.setSalePrice(sItem.getListPrice());
+        siRepo.save(sItem);
+    }
+    item = service.findByStoreIdanditemid(uploadRequest.getStoreId(),response.getId());
     System.out.println(item.getStock());
     service.updateStockCountafterInventoryUpdate(item, uploadRequest.getStock());
     System.out.println(item.getStock());
-    return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
+    //return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
+    return new ResponseEntity<CartResponse>(
+      BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.MOVED_TO_LIST), HttpStatus.OK);
   }
 }

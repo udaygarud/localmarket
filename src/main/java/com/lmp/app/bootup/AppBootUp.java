@@ -94,7 +94,14 @@ public class AppBootUp {
     Random random = new Random();
     Float min = Float.MAX_VALUE;
     Float max = 0f;
+
     for(StoreEntity store : stores) {
+      System.out.println(store.getName());
+      if(store.getName().equals("Wineyards") || store.getName().equals("Capital Stores") || store.getName().equals("Nita Wines") )
+      {
+        System.out.println("reached here");
+        continue;
+      }
       if(item.canGoOnStoreInventory(store)) {
         StoreItemEntity sItem = new StoreItemEntity();
         long time = System.currentTimeMillis();
