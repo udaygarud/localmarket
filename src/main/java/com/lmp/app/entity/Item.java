@@ -43,6 +43,12 @@ public class Item {
     item.offerPrice = Math.round(itemEnyity.getSalePrice() * 100.0) / 100.0;
     return item;
   }
+  public static Item fromStoreInventoryV2Entity(StoreItemEntity itemEnyity) {
+    Item item = new Item();
+    BeanUtils.copyProperties(itemEnyity.getItem(), item);
+    
+    return item;
+  }
   public int getStock() {
     return stock;
   }

@@ -1,6 +1,7 @@
 package com.lmp.db.pojo;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -10,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.lmp.app.entity.ShoppingCart.CartItem;
+import com.lmp.app.entity.StoreItem;
+import com.lmp.app.service.StoreService;
 
 @Document(collection="storeInventory")
 @TypeAlias("storeInventory")
@@ -34,6 +37,9 @@ public class StoreItemEntity implements Comparable<StoreItemEntity>{
   private long added;
   private long updated;
 
+  @Autowired
+  private StoreService service;
+  
   public CartItem toCartItem() {
     CartItem ci = new CartItem();
     BeanUtils.copyProperties(this.getItem(), ci);
@@ -44,6 +50,13 @@ public class StoreItemEntity implements Comparable<StoreItemEntity>{
     return ci;
   }
   
+  public StoreItem toStoreItem() {
+    StoreItem item = new StoreItem();
+    BeanUtils.copyProperties(this, item);
+    item.setStore(new StoreEntity().setId(this.getStoreId()));
+    //item.setStore(service.getStoreById(this.getStoreId()));
+    return item;
+  }
   public String getId() {
     return id;
   }

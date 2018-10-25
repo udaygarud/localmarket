@@ -12,8 +12,6 @@ public interface StoreInventoryRepository
     extends MongoRepository<StoreItemEntity, String>{
 
   public StoreItemEntity findByStoreIdAndItemId(String storeId, String itemId);
-  
-  public StoreItemEntity findByStoreId(String storeId);
  
   public Page<StoreItemEntity> findAllByStoreIdIn(List<String> id, Pageable page);
 
@@ -23,7 +21,5 @@ public interface StoreInventoryRepository
 
   public Page<StoreItemEntity> findAllByStoreIdInAndItemIdInAndOnSaleTrue(List<String> storeIds, List<String> ids,
       Pageable page);
-
-  public List<StoreItemEntity> findByItemId(String itemId);
 
 }

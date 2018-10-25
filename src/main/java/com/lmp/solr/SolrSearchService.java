@@ -41,8 +41,11 @@ public class SolrSearchService {
 
   private Criteria addSearchConditions(SearchRequest sRequest, List<String> storeIds) {
     // do or query for brand, as we want exact search
-    Criteria conditions = QueryUtils.andQuery(DEFAULT_FIELD,
-        Splitter.on(" ").splitToList(Strings.nullToEmpty(sRequest.getQuery())));
+    
+    /* businees doesnt want to split the query string */
+    //Criteria conditions = QueryUtils.andQuery(DEFAULT_FIELD,
+    //    Splitter.on(" ").splitToList(Strings.nullToEmpty(sRequest.getQuery())));
+    Criteria conditions =  new Criteria(DEFAULT_FIELD.getValue()).is(Strings.nullToEmpty(sRequest.getQuery())); 
     if (sRequest.brandFilter() != null) {
       // do and brand name, as we want exact search
       // do and with query fields in content field

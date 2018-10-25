@@ -7,6 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.solr.client.solrj.SolrServerException;
 import org.slf4j.Logger;
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.lmp.app.service.AutoCompleteService;
 import com.lmp.app.utils.FileIOUtil;
 import com.lmp.config.ConfigProperties;
@@ -57,31 +63,39 @@ public class AppBootUp {
   @Autowired
   private CustomerOrderRepository orderRepo;
 
-  private void seedOneCategory(File file, List<StoreEntity> stores) throws IOException, SolrServerException {
+  private void seedOneCategory(File file, List<StoreEntity> stores) throws IOException, SolrServerException, InterruptedException, ExecutionException {
     ObjectMapper objectMapper = new ObjectMapper();
-    
     List<ItemEntity> items = objectMapper.readValue(file, new TypeReference<List<ItemEntity>>() {});
     logger.info("Seeding data file: {}", file.getName());
-    Iterator<ItemEntity> it = items.listIterator();
-    while(it.hasNext()) {
     
-      ItemEntity item = it.next();
-      System.out.println(item.getCategories().contains("beer") + " ..hi");
-      if( !item.getCategories().contains("beer") && !item.getCategories().contains("wine") && !item.getCategories().contains("vodka") && !item.getCategories().contains("tequila")
-      && !item.getCategories().contains("hard ciders") && !item.getCategories().contains("spirits") && 
-      !item.getCategories().contains("types of whiskey") &&  !item.getCategories().contains("malt drinks")){
-        System.out.println(item + " hi");
-        continue; 
-      }
-      try {
-        itemRepo.save(item);
-        Object[] values = fillStoreInventory(item, stores);
-        indexer.addToIndex(item, (String)values[0], (Float)values[1], (Float)values[2]);
-      } catch (DuplicateKeyException e) {
-        logger.info("found duplicate item upc {}", item.getUpc());
-        logger.error(e.getMessage(), e);
-        it.remove();
-      }
+    List<List<ItemEntity>> listOfList = Lists.partition(items, items.size() > 10 ? items.size() / 10: 1);
+   
+    ExecutorService ex = Executors.newFixedThreadPool(10);
+    List<Future<Void>> futures = new ArrayList<>();
+    
+    for(int i = 0; i <listOfList.size(); i++) {
+      List<ItemEntity> list = listOfList.get(i);
+      futures.add(ex.submit(new Callable<Void>() {
+
+        @Override
+        public Void call() throws Exception {
+          for(ItemEntity item : list) {
+            try {
+              itemRepo.save(item);
+              Object[] values = fillStoreInventory(item, stores);
+              indexer.addToIndex(item, (String)values[0], (Float)values[1], (Float)values[2]);
+            } catch (DuplicateKeyException e) {
+              logger.info("found duplicate item upc {}", item.getUpc());
+              logger.error(e.getMessage(), e);     
+            }
+          }
+          return null;
+        }
+      }));
+    }
+    
+    for (Future<Void> future : futures) {
+      future.get();
     }
     // index documents
     //indexer.addToIndex(items);
@@ -94,14 +108,7 @@ public class AppBootUp {
     Random random = new Random();
     Float min = Float.MAX_VALUE;
     Float max = 0f;
-
     for(StoreEntity store : stores) {
-      System.out.println(store.getName());
-      if(store.getName().equals("Wineyards") || store.getName().equals("Capital Stores") || store.getName().equals("Nita Wines") )
-      {
-        System.out.println("reached here");
-        continue;
-      }
       if(item.canGoOnStoreInventory(store)) {
         StoreItemEntity sItem = new StoreItemEntity();
         long time = System.currentTimeMillis();
@@ -153,7 +160,7 @@ public class AppBootUp {
     storeRepo.saveAll(stores);
   }
 
-  public void buildItemRepo() throws IOException, SolrServerException {
+  public void buildItemRepo() throws IOException, SolrServerException, InterruptedException, ExecutionException {
     if(!prop.isDataSeedEnabled() || prop.getDataSeedDir() == null 
         || prop.getDataSeedDir().isEmpty()) {
       return ;
