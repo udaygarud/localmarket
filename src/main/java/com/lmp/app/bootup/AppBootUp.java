@@ -80,6 +80,12 @@ public class AppBootUp {
         @Override
         public Void call() throws Exception {
           for(ItemEntity item : list) {
+            if( !item.getCategories().contains("beer") && !item.getCategories().contains("wine") && !item.getCategories().contains("vodka") && !item.getCategories().contains("tequila")
+            && !item.getCategories().contains("hard ciders") && !item.getCategories().contains("spirits") && 
+            !item.getCategories().contains("types of whiskey") &&  !item.getCategories().contains("malt drinks")){
+              System.out.println(item + " hi");
+              continue; 
+            }
             try {
               itemRepo.save(item);
               Object[] values = fillStoreInventory(item, stores);
