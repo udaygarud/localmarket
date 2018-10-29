@@ -2,9 +2,12 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +28,9 @@ import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.SearchRequest;
 import com.lmp.app.model.SearchResponse;
 import com.lmp.db.pojo.ItemEntity;
+import com.lmp.db.pojo.SearchHistoryEntity;
 import com.lmp.db.pojo.StoreItemEntity;
+import com.lmp.db.repository.SearchHistoryRepository;
 import com.lmp.db.repository.StoreInventoryRepository;
 import com.lmp.solr.SolrSearchService;
 import com.lmp.solr.entity.ItemDoc;
@@ -45,6 +50,9 @@ public class StoreInventoryService {
   ItemService itemService;
   @Autowired
   private StoreInventoryRepository siRepo;
+  @Autowired
+  SearchHistoryRepository historyRepo;
+
 
   public Item findStoreItemByUpc(long upc, String storeId) {
 	  ItemEntity entity = itemService.findByUpc(upc);
@@ -145,6 +153,56 @@ public class StoreInventoryService {
     return searchDBForDocs(sRequest, storeIdsToSearch, docs, v2);
   }
 
+  public void insertHistory(String userId, String query) {
+		Optional<SearchHistoryEntity> users = historyRepo.findById(userId);
+		LinkedHashMap<Integer, String> hm = new LinkedHashMap<Integer, String>();
+		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
+		List<String> list = new ArrayList<>();
+		Set<String> searchedQuery= new HashSet<>();;
+		if (users.isPresent()) {
+			hm = users.get().getQuery();
+			Boolean flag = false;
+			int key = 0;
+			for (Map.Entry<Integer, String> entry : hm.entrySet()) {
+				key = entry.getKey();
+				list.add(entry.getValue());
+				if (entry.getValue().equals(query)) {
+					flag = true;
+				}
+			}
+			if (!flag) {
+				list.add(query);
+				hm.put(key++, query);
+			}
+			for(int i=0;i<list.size();i++) {
+				map.put(i, list.get(i));     
+			    }
+			SearchHistoryEntity entity = new SearchHistoryEntity();
+			entity.setId(userId);
+			entity.setQuery(map);
+			historyRepo.save(entity);
+		} else {
+			SearchHistoryEntity entity = new SearchHistoryEntity();
+			entity.setId(userId);
+			hm.put(0, query);
+			entity.setQuery(hm);
+			searchedQuery.add(query);
+			historyRepo.save(entity);
+		}
+	}
+
+	public Map<Integer,String> getHistory(String email){
+		Optional<SearchHistoryEntity> searchItem = historyRepo.findById(email);
+		Map<Integer,String> map = new HashMap<Integer, String>();
+		if(searchItem.isPresent()){
+			return searchItem.get().getQuery();
+		}
+		else{
+			return map;
+		}
+	}
+
+  
   public CartItem findById(String id) {
     Optional<StoreItemEntity> sItem = repo.findById(id);
     return sItem.isPresent() ? sItem.get().toCartItem() : null;

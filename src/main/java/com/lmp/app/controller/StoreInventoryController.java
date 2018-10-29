@@ -1,6 +1,8 @@
 package com.lmp.app.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -8,6 +10,7 @@ import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.ResponseFilter;
 import com.lmp.app.model.SearchRequest;
+import com.lmp.app.model.SearchResponse;
 import com.lmp.app.model.UploadInventory;
 import com.lmp.app.model.validator.SearchRequestValidator;
 import com.lmp.app.service.ItemService;
@@ -27,8 +30,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -77,15 +82,22 @@ public class StoreInventoryController extends BaseController {
     }
     return new ResponseEntity<BaseResponse>(response, HttpStatus.OK);
   }
-
-  
+ 
   @RequestMapping(value = "v2/search", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<?> lookupStoreInventoryV2(@Valid @RequestBody SearchRequest searchRequest, Errors errors) {
+  public ResponseEntity<?> lookupStoreInventoryV2(@Valid @RequestBody SearchRequest searchRequest, Errors errors,@RequestHeader(value="emailId") String emailId,@RequestHeader(value="uId") String uId ) {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
     logger.info("searching for the request " + searchRequest.toString());
+    //emailId , uId- unique id 
+    if(!emailId.equals(null)&& !emailId.equals("")){
+    	service.insertHistory(emailId,searchRequest.getQuery());	
+    }else{
+    	if(!uId.equals("")){
+    		service.insertHistory(uId,searchRequest.getQuery());	
+    	}
+    }
     BaseResponse response = service.search(searchRequest, true);
     // logger.info("getting store details for store id {}", storeId);
 
@@ -96,22 +108,25 @@ public class StoreInventoryController extends BaseController {
     return new ResponseEntity<BaseResponse>(response, HttpStatus.OK);
   }
   
-  @RequestMapping(value = "/filters", method = RequestMethod.POST)
+  @RequestMapping(value = "/searchHistory", method = RequestMethod.GET)
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<?> lookupStoreInventoryFilters(@Valid @RequestBody SearchRequest searchRequest, Errors errors) {
-    if (errors.hasErrors()) {
-      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+  public ResponseEntity<?> getHistory(@RequestParam(value = "emailId", required = false) String emailId) { 
+	SearchResponse<String> response = new SearchResponse<>();
+	List<String> list = new ArrayList<>();
+    if(!emailId.equals(null)&& !emailId.equals("")){ 	
+    	Map<Integer,String> map=service.getHistory(emailId);
+    	logger.info("getting history for {}", emailId);
+    	if(!map.isEmpty()){
+    	for (Map.Entry<Integer, String> entry : map.entrySet()) {
+			list.add(entry.getValue());
+		}
+        response.setResults(list);
+    	}
     }
-    logger.info("searching for the request {}", searchRequest);
-    List<ResponseFilter> response = filterService.getFiltersFor(searchRequest);
-    // logger.info("getting store details for store id {}", storeId);
+    
+    return new ResponseEntity<SearchResponse>(response, HttpStatus.OK);
 
-    if (response == null) {
-      logger.info("no results for request {}", searchRequest.toString());
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
-    return new ResponseEntity<List<ResponseFilter>>(response, HttpStatus.OK);
-  }
+      }
 
   @RequestMapping(value = "/upload-inventory" , method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
