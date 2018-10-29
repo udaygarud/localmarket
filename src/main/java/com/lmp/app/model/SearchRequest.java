@@ -17,7 +17,7 @@ public class SearchRequest extends PageableRequest {
   private double lat;
   private double lng;
   private int radius = 5;
-    
+
   public SearchRequest() {
   }
   public SearchRequest(int page, int count) {
@@ -130,8 +130,8 @@ public class SearchRequest extends PageableRequest {
   public void setRadius(int radius) {
     this.radius = radius;
   }
-  
-@Override
+
+  @Override
   public String toString() {
     return "query: " + query 
         + "storeId: " + storeId
