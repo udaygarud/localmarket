@@ -89,6 +89,7 @@ public class StoreInventoryController extends BaseController {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
+    System.out.println(emailId + " Email " + uId);
     logger.info("searching for the request " + searchRequest.toString());
     //emailId , uId- unique id 
     if(!emailId.equals(null)&& !emailId.equals("")){

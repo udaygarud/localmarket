@@ -158,8 +158,8 @@ public class StoreInventoryService {
 		LinkedHashMap<Integer, String> hm = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
 		List<String> list = new ArrayList<>();
-		Set<String> searchedQuery= new HashSet<>();;
-		if (users.isPresent()) {
+    Set<String> searchedQuery= new HashSet<>();
+		if (users.isPresent() && users.get().getQuery().get(0) != null) {
 			hm = users.get().getQuery();
 			Boolean flag = false;
 			int key = 0;
