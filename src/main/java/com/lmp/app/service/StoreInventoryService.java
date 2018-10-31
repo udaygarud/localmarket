@@ -161,7 +161,7 @@ public class StoreInventoryService {
 		List<String> list = new ArrayList<>();
 		Set<String> searchedQuery= new HashSet<>();;
 		if (entity!=null) {
-			updateSearchHistory(entity,"",uId,query,"uId");
+			updateSearchHistory(entity,"",uId,query);
 		} else {
 			SearchHistoryEntity userentity = new SearchHistoryEntity();
 			userentity.setuId(uId);
@@ -181,8 +181,8 @@ public class StoreInventoryService {
 		List<String> list = new ArrayList<>();
 		Set<String> searchedQuery= new HashSet<>();;
 		if (entityForEmailAndUid!=null) {
-			System.out.println(" user present ");
-			updateSearchHistory(entityForEmailAndUid,emailId,uId,query,"emailIdAnduId");
+			//System.out.println(" user present ");
+			updateSearchHistory(entityForEmailAndUid,emailId,uId,query);
 		}
 //		else if(entryForEmail!= null){
 //			updateSearchHistory(entryForEmail,emailId,uId,query,"emailId");
@@ -192,7 +192,6 @@ public class StoreInventoryService {
 //		}
 			else {
 		
-			System.out.println(" not present ");
 			SearchHistoryEntity userentity = new SearchHistoryEntity();
 			//entity = users;
 			userentity.setEmailId(emailId);
@@ -203,7 +202,7 @@ public class StoreInventoryService {
 			historyRepo.save(userentity);
 		}
 	}
-	public void updateSearchHistory(SearchHistoryEntity entity,String emailId,String uId,String query,String Idtype){
+	public void updateSearchHistory(SearchHistoryEntity entity,String emailId,String uId,String query){
 		LinkedHashMap<Integer, String> hm = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
 		List<String> list = new ArrayList<>();
@@ -225,33 +224,35 @@ public class StoreInventoryService {
 			map.put(i, list.get(i));     
 		    }
 		
-		if(Idtype.equals("emailId")){
-			if(!entity.getuId().equals("")){
-				entity.setuId(entity.getuId());
-			}else{
-				entity.setuId(uId);	
-			}
-			entity.setId(entity.getId());
-			entity.setEmailId(emailId);
-			entity.setQuery(map);
-			historyRepo.save(entity);
-
-		}else{
-		if(!entity.getEmailId().equals("")){
-			entity.setEmailId(entity.getEmailId());
-		}
+//		if(Idtype.equals("emailId")){
+//			if(!entity.getuId().equals("")){
+//				entity.setuId(entity.getuId());
+//			}else{
+//				entity.setuId(uId);	
+//			}
+//			entity.setId(entity.getId());
+//			entity.setEmailId(emailId);
+//			entity.setQuery(map);
+//			historyRepo.save(entity);
+//
+//		}else{
+//		if(!entity.getEmailId().equals("")){
+//			entity.setEmailId(entity.getEmailId());
+//		}
+		
 		entity.setId(entity.getId());
 		entity.setuId(uId);
+		entity.setEmailId(emailId);
 		entity.setQuery(map);
 		historyRepo.save(entity);
 		}
-	}
+	
 
-	public Map<Integer,String> getHistory(String email){
-		Optional<SearchHistoryEntity> searchItem = historyRepo.findById(email);
+	public Map<Integer,String> getHistory(String uId,String emailId){
+		SearchHistoryEntity searchItem = historyRepo.findByEmailIdAndUId(emailId,uId);
 		Map<Integer,String> map = new HashMap<Integer, String>();
-		if(searchItem.isPresent()){
-			return searchItem.get().getQuery();
+		if(searchItem!=null){
+			return searchItem.getQuery();
 		}
 		else{
 			return map;

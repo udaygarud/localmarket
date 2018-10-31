@@ -92,7 +92,8 @@ public class StoreInventoryController extends BaseController {
     logger.info("searching for the request " + searchRequest.toString());
     //emailId , uId- unique id 
     // when uId is only present
-    if(!uId.equals("") && uId!=null && emailId.isEmpty()){
+    //System.out.println(" email "+emailId.equals(null));
+    if(!uId.equals("") && uId!=null && emailId.isEmpty()||emailId.equals(null)){
 		service.insertHistoryBasedOnUID(uId,searchRequest.getQuery());	
     	}
     // when both present
@@ -111,20 +112,32 @@ public class StoreInventoryController extends BaseController {
   
   @RequestMapping(value = "/searchHistory", method = RequestMethod.GET)
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<?> getHistory(@RequestParam(value = "emailId", required = false) String emailId) { 
-	SearchResponse<String> response = new SearchResponse<>();
-	List<String> list = new ArrayList<>();
-    if(!emailId.equals(null)&& !emailId.equals("")){ 	
-    	Map<Integer,String> map=service.getHistory(emailId);
-    	logger.info("getting history for {}", emailId);
-    	if(!map.isEmpty()){
-    	for (Map.Entry<Integer, String> entry : map.entrySet()) {
-			list.add(entry.getValue());
-		}
-        response.setResults(list);
-    	}
-    }
-    
+  public ResponseEntity<?> getHistory(@RequestParam(value = "emailId", required = false) String emailId,@RequestParam(value = "uId", required = false) String uId) { 
+	  SearchResponse<String> response = new SearchResponse<>();
+		List<String> list = new ArrayList<>();
+	    // when uId is only present
+	    if(!uId.equals("") && uId!=null && emailId.isEmpty()){
+	    	Map<Integer,String> map=service.getHistory(uId,"");
+	    	logger.info("getting history for {}", emailId);
+	    	if(!map.isEmpty()){
+	    	for (Map.Entry<Integer, String> entry : map.entrySet()) {
+				list.add(entry.getValue());
+			}
+	        response.setResults(list);
+	    	}	
+	    }
+	    // when both present
+	    else if(uId!=null&&!uId.isEmpty()&&!emailId.isEmpty() && emailId!=null){
+	    	Map<Integer,String> map=service.getHistory(uId,emailId);
+	    	logger.info("getting history for {}", emailId);
+	    	if(!map.isEmpty()){
+	    	for (Map.Entry<Integer, String> entry : map.entrySet()) {
+				list.add(entry.getValue());
+			}
+	        response.setResults(list);
+	    	}
+	    }
+	     	
     return new ResponseEntity<SearchResponse>(response, HttpStatus.OK);
 
       }
