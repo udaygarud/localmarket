@@ -11,8 +11,22 @@ public class SearchHistoryEntity {
 
 	@Id
 	private String id;
+	private String emailId;
+	private String uId;
 	private   LinkedHashMap<Integer,String> query;
- 
+	public String getEmailId() {
+		return emailId;
+	}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+	public String getuId() {
+		return uId;
+	}
+	public void setuId(String uId) {
+		this.uId = uId;
+	}
+	
 	public String getId() {
 		return id;
 	}

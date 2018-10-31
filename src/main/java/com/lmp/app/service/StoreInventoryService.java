@@ -153,41 +153,97 @@ public class StoreInventoryService {
     return searchDBForDocs(sRequest, storeIdsToSearch, docs, v2);
   }
 
-  public void insertHistory(String userId, String query) {
-		Optional<SearchHistoryEntity> users = historyRepo.findById(userId);
+  
+	public void insertHistoryBasedOnUID(String uId,String query) {
+		SearchHistoryEntity entity = historyRepo.findByUIdAndEmailId(uId, "");
 		LinkedHashMap<Integer, String> hm = new LinkedHashMap<Integer, String>();
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
 		List<String> list = new ArrayList<>();
-    Set<String> searchedQuery= new HashSet<>();
-		if (users.isPresent() && users.get().getQuery().get(0) != null) {
-			hm = users.get().getQuery();
-			Boolean flag = false;
-			int key = 0;
-			for (Map.Entry<Integer, String> entry : hm.entrySet()) {
-				key = entry.getKey();
-				list.add(entry.getValue());
-				if (entry.getValue().equals(query)) {
-					flag = true;
-				}
+		Set<String> searchedQuery= new HashSet<>();;
+		if (entity!=null) {
+			updateSearchHistory(entity,"",uId,query,"uId");
+		} else {
+			SearchHistoryEntity userentity = new SearchHistoryEntity();
+			userentity.setuId(uId);
+			userentity.setEmailId("");
+			hm.put(0, query);
+			userentity.setQuery(hm);
+			searchedQuery.add(query);
+			historyRepo.save(userentity);
+		}
+	}
+	public void insertHistoryBasedOnEmailAndUID(String emailId,String uId,String query) {
+		SearchHistoryEntity entityForEmailAndUid = historyRepo.findByEmailIdAndUId(emailId, uId);
+	//	SearchHistoryEntity entryForEmail = historyRepo.findByEmailId(emailId);
+		//SearchHistoryEntity entryForUid = historyRepo.findByUId(uId);	 
+		LinkedHashMap<Integer, String> hm = new LinkedHashMap<Integer, String>();
+		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
+		List<String> list = new ArrayList<>();
+		Set<String> searchedQuery= new HashSet<>();;
+		if (entityForEmailAndUid!=null) {
+			System.out.println(" user present ");
+			updateSearchHistory(entityForEmailAndUid,emailId,uId,query,"emailIdAnduId");
+		}
+//		else if(entryForEmail!= null){
+//			updateSearchHistory(entryForEmail,emailId,uId,query,"emailId");
+//		}
+//		else if(entryForUid!=null){
+//			updateSearchHistory(entryForUid,emailId,uId,query,"uId");
+//		}
+			else {
+		
+			System.out.println(" not present ");
+			SearchHistoryEntity userentity = new SearchHistoryEntity();
+			//entity = users;
+			userentity.setEmailId(emailId);
+			userentity.setuId(uId);	
+			hm.put(0, query);
+			userentity.setQuery(hm);
+			searchedQuery.add(query);
+			historyRepo.save(userentity);
+		}
+	}
+	public void updateSearchHistory(SearchHistoryEntity entity,String emailId,String uId,String query,String Idtype){
+		LinkedHashMap<Integer, String> hm = new LinkedHashMap<Integer, String>();
+		LinkedHashMap<Integer, String> map = new LinkedHashMap<Integer, String>();
+		List<String> list = new ArrayList<>();
+		hm = entity.getQuery();
+		Boolean flag = false;
+		int key = 0;
+		for (Map.Entry<Integer, String> entry : hm.entrySet()) {
+			key = entry.getKey();
+			list.add(entry.getValue());
+			if (entry.getValue().equalsIgnoreCase(query)) {
+				flag = true;
 			}
-			if (!flag) {
-				list.add(query);
-				hm.put(key++, query);
+		}
+		if (!flag) {
+			list.add(query);
+			hm.put(key++, query);
+		}
+		for(int i=0;i<list.size();i++) {
+			map.put(i, list.get(i));     
+		    }
+		
+		if(Idtype.equals("emailId")){
+			if(!entity.getuId().equals("")){
+				entity.setuId(entity.getuId());
+			}else{
+				entity.setuId(uId);	
 			}
-			for(int i=0;i<list.size();i++) {
-				map.put(i, list.get(i));     
-			    }
-			SearchHistoryEntity entity = new SearchHistoryEntity();
-			entity.setId(userId);
+			entity.setId(entity.getId());
+			entity.setEmailId(emailId);
 			entity.setQuery(map);
 			historyRepo.save(entity);
-		} else {
-			SearchHistoryEntity entity = new SearchHistoryEntity();
-			entity.setId(userId);
-			hm.put(0, query);
-			entity.setQuery(hm);
-			searchedQuery.add(query);
-			historyRepo.save(entity);
+
+		}else{
+		if(!entity.getEmailId().equals("")){
+			entity.setEmailId(entity.getEmailId());
+		}
+		entity.setId(entity.getId());
+		entity.setuId(uId);
+		entity.setQuery(map);
+		historyRepo.save(entity);
 		}
 	}
 

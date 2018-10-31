@@ -89,15 +89,15 @@ public class StoreInventoryController extends BaseController {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
-    System.out.println(emailId + " Email " + uId);
     logger.info("searching for the request " + searchRequest.toString());
     //emailId , uId- unique id 
-    if(!emailId.equals(null)&& !emailId.equals("")){
-    	service.insertHistory(emailId,searchRequest.getQuery());	
-    }else{
-    	if(!uId.equals("")){
-    		service.insertHistory(uId,searchRequest.getQuery());	
+    // when uId is only present
+    if(!uId.equals("") && uId!=null && emailId.isEmpty()){
+		service.insertHistoryBasedOnUID(uId,searchRequest.getQuery());	
     	}
+    // when both present
+    else if(uId!=null&&!uId.isEmpty()&&!emailId.isEmpty() && emailId!=null){
+    	service.insertHistoryBasedOnEmailAndUID(emailId,uId, searchRequest.getQuery());
     }
     BaseResponse response = service.search(searchRequest, true);
     // logger.info("getting store details for store id {}", storeId);
