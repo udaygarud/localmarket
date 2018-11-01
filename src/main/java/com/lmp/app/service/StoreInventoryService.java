@@ -211,34 +211,22 @@ public class StoreInventoryService {
 		int key = 0;
 		for (Map.Entry<Integer, String> entry : hm.entrySet()) {
 			key = entry.getKey();
-			list.add(entry.getValue());
-			if (entry.getValue().equalsIgnoreCase(query)) {
-				flag = true;
+			if(entry.getValue()!=null && query!=null){
+				list.add(entry.getValue());
+				if (entry.getValue().equalsIgnoreCase(query)) {
+					flag = true;
+				}	
 			}
 		}
 		if (!flag) {
+			if(query!=null){
 			list.add(query);
 			hm.put(key++, query);
+			}
 		}
 		for(int i=0;i<list.size();i++) {
 			map.put(i, list.get(i));     
 		    }
-		
-//		if(Idtype.equals("emailId")){
-//			if(!entity.getuId().equals("")){
-//				entity.setuId(entity.getuId());
-//			}else{
-//				entity.setuId(uId);	
-//			}
-//			entity.setId(entity.getId());
-//			entity.setEmailId(emailId);
-//			entity.setQuery(map);
-//			historyRepo.save(entity);
-//
-//		}else{
-//		if(!entity.getEmailId().equals("")){
-//			entity.setEmailId(entity.getEmailId());
-//		}
 		
 		entity.setId(entity.getId());
 		entity.setuId(uId);

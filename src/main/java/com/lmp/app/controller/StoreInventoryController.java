@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.google.common.base.Strings;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.ResponseFilter;
@@ -92,15 +93,17 @@ public class StoreInventoryController extends BaseController {
     logger.info("searching for the request " + searchRequest.toString());
     //emailId , uId- unique id 
     // when uId is only present
-    //System.out.println(" email "+emailId.equals(null));
-    if(!uId.equals("") && uId!=null && emailId.isEmpty()||emailId.equals(null)){
-		service.insertHistoryBasedOnUID(uId,searchRequest.getQuery());	
-    	}
-    // when both present
-    else if(uId!=null&&!uId.isEmpty()&&!emailId.isEmpty() && emailId!=null){
-    	service.insertHistoryBasedOnEmailAndUID(emailId,uId, searchRequest.getQuery());
-    }
-    BaseResponse response = service.search(searchRequest, true);
+    if(!Strings.isNullOrEmpty(searchRequest.getQuery())){
+    	//if(!uId.equals("") && uId!=null && emailId.isEmpty()||emailId.equals(null)){
+    	if(!uId.equals("") && uId!=null && Strings.isNullOrEmpty(emailId)){
+    	service.insertHistoryBasedOnUID(uId,searchRequest.getQuery());	
+        	}
+        // when both present
+        else if(uId!=null&&!uId.isEmpty()&&!emailId.isEmpty() && emailId!=null){
+        	service.insertHistoryBasedOnEmailAndUID(emailId,uId, searchRequest.getQuery());
+        }
+   }
+        BaseResponse response = service.search(searchRequest, true);
     // logger.info("getting store details for store id {}", storeId);
 
     if (response == null) {
