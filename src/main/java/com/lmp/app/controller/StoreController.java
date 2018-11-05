@@ -18,10 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.lmp.app.model.NewStoreUserRequest;
 import com.lmp.app.model.StoreRequest;
 import com.lmp.app.service.StoreService;
 import com.lmp.app.utils.ValidationErrorBuilder;
 import com.lmp.db.pojo.StoreEntity;
+import com.lmp.db.pojo.UserEntity;
+import com.lmp.db.repository.UserRepository;
 
 @RestController
 public class StoreController extends BaseController {
@@ -30,7 +36,8 @@ public class StoreController extends BaseController {
 
   @Autowired
   private StoreService storeService;
-
+  @Autowired
+  private UserRepository userRepo;
   //lat=37.356752&lng=-121.999249&size=5
   @GetMapping("/store/nearby")
   @ResponseStatus(HttpStatus.OK)
@@ -60,14 +67,51 @@ public class StoreController extends BaseController {
   @RequestMapping(value = "/store/register-new", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> registerStore(@Valid @RequestBody StoreRequest sRequest, Errors errors) {
+    
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
+    System.out.println(sRequest.getLocation());
     StoreEntity store = storeService.registerStore(sRequest);
     if(store == null) {
       logger.debug("store registration failed");
       return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return new ResponseEntity<StoreEntity>(store, HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/user/register-new", method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> registerUser(@Valid @RequestBody NewStoreUserRequest sRequest, Errors errors) {
+    
+    if (errors.hasErrors()) {
+      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+    }
+
+      UserEntity user = userRepo.findByEmail(sRequest.getEmail());
+      if(user != null) {
+        ObjectMapper mapper = new ObjectMapper();
+        logger.debug("User registration failed");
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("message", "User Already Present");
+ 
+        return new ResponseEntity<ObjectNode>(objectNode,HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+
+      UserEntity entity = new UserEntity();
+      entity.setId(sRequest.getEmail());
+      entity.setEmail(sRequest.getEmail());
+      entity.setFirstName(sRequest.getFirstName());
+      entity.setLastName(sRequest.getLastName());
+      entity.setPhoneNumber(sRequest.getPhoneNumber());
+      entity.setUserName(sRequest.getUserName());
+      userRepo.save(entity);
+
+/* 
+    if(user == null) {
+      logger.debug("store registration failed");
+      return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+    } */
+    return new ResponseEntity<UserEntity>(entity, HttpStatus.OK);
   }
 }

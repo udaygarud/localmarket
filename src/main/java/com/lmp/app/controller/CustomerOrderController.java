@@ -21,12 +21,14 @@ import com.lmp.app.entity.CustomerOrder;
 import com.lmp.app.exceptions.UnauthorizedException;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CustomerOrderRequest;
+import com.lmp.app.model.StoreRequest;
 import com.lmp.app.model.validator.CustomerOrderRequestValidator;
 import com.lmp.app.service.CustomerOrderService;
 import com.lmp.app.service.StoreService;
 import com.lmp.app.utils.ValidationErrorBuilder;
 import com.lmp.db.pojo.StoreEntity;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class CustomerOrderController extends BaseController {
 
@@ -81,13 +83,25 @@ public class CustomerOrderController extends BaseController {
   @RequestMapping(value = "/store-order", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> findByStoreOwner(@Valid @RequestBody CustomerOrderRequest cRequest, Errors errors) {
+
+    ObjectMapper mapper = new ObjectMapper();
+    StoreRequest obj = new StoreRequest();
+    try {
+      String jsonInString = mapper.writeValueAsString(obj);
+      System.out.println(jsonInString);
+    } catch (JsonProcessingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+  }
+  
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
-    logger.info("get store id of the owner {}", cRequest.getUserId());
-    StoreEntity store = storeService.getStoreByOwner(cRequest.getUserId());
+    logger.info("get store id of the owner {}", cRequest.getStoreId());
+    //StoreEntity store = storeService.getStoreByOwnerEmail(cRequest.getUserId());
+    StoreEntity store = storeService.getStoreById(cRequest.getStoreId());
     if(store == null) {
-      logger.info("user {} does not have any stores" , cRequest.getUserId());
+      logger.info("user {} does not have any stores" , cRequest.getStoreId());
       throw new UnauthorizedException();
     }
     cRequest.setStoreId(store.getId());

@@ -117,9 +117,10 @@ public class StoreInventoryController extends BaseController {
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> getHistory(@RequestParam(value = "emailId", required = false) String emailId,@RequestParam(value = "uId", required = false) String uId) { 
 	  SearchResponse<String> response = new SearchResponse<>();
-		List<String> list = new ArrayList<>();
+    List<String> list = new ArrayList<>();
+    System.out.println("In search History" + emailId + "Hui "+ uId);
 	    // when uId is only present
-	    if(!uId.equals("") && uId!=null && emailId.isEmpty()){
+	    if(uId!=null  && !uId.equals("") && emailId.isEmpty()){
 	    	Map<Integer,String> map=service.getHistory(uId,"");
 	    	logger.info("getting history for {}", emailId);
 	    	if(!map.isEmpty()){

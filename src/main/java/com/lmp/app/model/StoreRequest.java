@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.lmp.db.pojo.Currency;
 
+import org.springframework.util.Assert;
 @Component
 public class StoreRequest {
 
@@ -14,7 +15,15 @@ public class StoreRequest {
   private String franchise;
   private String address;
   private StoreCapabilities capabilities;
+  private Location location;
 
+  public Location getLocation() {
+    return this.location;
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
+  }
   
   public StoreRequest() {
   }
@@ -90,4 +99,5 @@ public class StoreRequest {
     }
   }
 }
+
 

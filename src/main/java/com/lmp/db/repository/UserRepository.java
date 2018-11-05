@@ -6,4 +6,5 @@ import com.lmp.db.pojo.UserEntity;
 
 public interface UserRepository extends MongoRepository<UserEntity, String> {
 
+    public UserEntity findByEmail(String email);
 }

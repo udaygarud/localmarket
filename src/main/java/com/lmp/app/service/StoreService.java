@@ -67,6 +67,10 @@ public class StoreService {
   public StoreEntity getStoreByOwner(String email) {
     return repo.findByStoreOwnerId(email);
   }
+
+  public StoreEntity getStoreByOwnerEmail(String email) {
+    return repo.findByStoreOwnerEmail(email);
+  }
   
   public StoreEntity registerStore(StoreRequest request) {
     StoreEntity entity = StoreEntity.toEntity(request);
