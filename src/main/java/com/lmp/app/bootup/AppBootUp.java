@@ -96,12 +96,12 @@ public class AppBootUp {
     Float max = 0f;
 
     for(StoreEntity store : stores) {
-      System.out.println(store.getName());
-      if(store.getName().equals("Wineyards") || store.getName().equals("Capital Stores") || store.getName().equals("Nita Wines") )
-      {
-        System.out.println("reached here");
-        continue;
-      }
+      // System.out.println(store.getName());
+      // if(store.getName().equals("Wineyards") || store.getName().equals("Capital Stores") || store.getName().equals("Nita Wines") )
+      // {
+      //   System.out.println("reached here");
+      //   continue;
+      // }
       if(item.canGoOnStoreInventory(store)) {
         StoreItemEntity sItem = new StoreItemEntity();
         long time = System.currentTimeMillis();
@@ -171,7 +171,7 @@ public class AppBootUp {
       storeRepo.deleteAll();
       userRepo.deleteAll();
       seedTestUsers();
-      seedStores();
+      //seedStores();
       FileIOUtil.deleteFile(prop.getSeededFiles());
     }
     Set<String> processed = FileIOUtil.readProcessed(prop.getSeededFiles());

@@ -15,8 +15,17 @@ public class StoreRequest {
   private String franchise;
   private String address;
   private StoreCapabilities capabilities;
-  private Location location;
+  private Location location;  
+  private String phoneNumber;
 
+
+  public String getPhoneNumber() {
+    return this.phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
   public Location getLocation() {
     return this.location;
   }

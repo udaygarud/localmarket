@@ -27,6 +27,15 @@ public class StoreEntity {
   @Nullable
   private UserEntity storeOwner;
   private StoreCapabilities capabilities;
+  private String phoneNumber;
+
+  public String getPhoneNumber() {
+    return this.phoneNumber;
+  }
+
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
 
   public static StoreEntity toEntity(StoreRequest request) {
     StoreEntity entity = new StoreEntity();
