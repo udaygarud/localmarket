@@ -154,6 +154,15 @@ public class StoreInventoryController extends BaseController {
 
   }
 
+  @RequestMapping(value = "/getProductInfo", method = RequestMethod.GET)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> getProductInfo(@RequestParam(value = "upc", required = false) String upc) {
+    System.out.println(upc + " UPC");
+    ItemEntity item =  itemservice.findByUpc(Long.parseLong(upc));
+    
+    return new ResponseEntity<ItemEntity>(item, HttpStatus.OK);
+  }
+
   @RequestMapping(value = "/upload-inventory", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> uploadStoreInventory(@Valid @RequestBody UploadInventory uploadRequest, Errors errors) {
