@@ -15,6 +15,9 @@ public class PriceRange {
   
   private int min;
   private int max;
+  
+  // neha code 
+  //private static final String 
 
   public static List<PriceRange> buildPriceRangeList(int max) {
     List<PriceRange> list = new ArrayList<>();

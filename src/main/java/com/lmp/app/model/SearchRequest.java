@@ -70,7 +70,7 @@ public class SearchRequest extends PageableRequest {
   }
 
   public String priceFilter() {
-    if(filters == null || !filters.containsKey(FilterField.PRICE_RANGE.getValue())) {
+    if(filters == null || !filters.containsKey(FilterField.PRICE_RANGE.getValue()) || filters.get(FilterField.PRICE_RANGE.getValue()).isEmpty()) {
       return null;
     }
     return filters.get(FilterField.PRICE_RANGE.getValue()).get(0).trim();

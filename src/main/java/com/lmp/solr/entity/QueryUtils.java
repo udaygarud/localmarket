@@ -98,7 +98,7 @@ public class QueryUtils {
       return null;
     }
     if(to == 0) {
-      return new Criteria(field.getValue()).greaterThanEqual(from);
+    	return new Criteria(field.getValue()).greaterThanEqual(from);
     } else {
       return new Criteria(field.getValue()).between(from, to);
     }

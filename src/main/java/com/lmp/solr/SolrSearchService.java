@@ -59,7 +59,7 @@ public class SolrSearchService {
     }
     if(sRequest.priceFilter() != null) {
       PriceRange pr = PriceRange.from(sRequest.priceFilter());
-      conditions = conditions.connect().and(QueryUtils.between(ItemField.MIN_PRICE, pr.getMin(), pr.getMax()));
+      conditions = conditions.connect().and(QueryUtils.between(ItemField.MIN_PRICE, pr.getMin(), pr.getMax()).and(QueryUtils.between(ItemField.MAX_PRICE, pr.getMin(), pr.getMax())));
     }
     return conditions;
   }
