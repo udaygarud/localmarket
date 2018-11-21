@@ -331,4 +331,11 @@ public class StoreInventoryService {
     return true;
   }
 
+  @Transactional
+  public boolean resetStockCountafterInventoryUpdate(StoreItemEntity item, int stock) {
+    item.setStock( stock);
+    repo.save(item);
+    return true;
+  }
+
 }

@@ -12,6 +12,7 @@ import com.google.common.base.Strings;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.ResponseFilter;
+import com.lmp.app.model.SearchProductID;
 import com.lmp.app.model.SearchRequest;
 import com.lmp.app.model.SearchResponse;
 import com.lmp.app.model.UploadmultiInventory;
@@ -154,13 +155,21 @@ public class StoreInventoryController extends BaseController {
 
   }
 
-  @RequestMapping(value = "/getProductInfo", method = RequestMethod.GET)
+  @RequestMapping(value = "/getProductInfo", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<?> getProductInfo(@RequestParam(value = "upc", required = false) String upc) {
-    System.out.println(upc + " UPC");
-    ItemEntity item =  itemservice.findByUpc(Long.parseLong(upc));
+  public ResponseEntity<?> getProductInfo(@Valid @RequestBody SearchProductID UpcRequest, Errors errors) {
+    if (errors.hasErrors()) {
+      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+    }
+    List<ItemEntity> items = new ArrayList<ItemEntity>();
+    List<String> upcs = UpcRequest.getListOfUpc();
+    for (String upc : upcs) {
+        ItemEntity item =  itemservice.findByUpc(Long.parseLong(upc));
+        items.add(item);
+    }
+   
     
-    return new ResponseEntity<ItemEntity>(item, HttpStatus.OK);
+    return new ResponseEntity<List<ItemEntity>>(items, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/upload-inventory", method = RequestMethod.POST)
@@ -199,6 +208,48 @@ public class StoreInventoryController extends BaseController {
    
     System.out.println(item.getStock());
     service.updateStockCountafterInventoryUpdate(item, uploadRequest.getStock());
+    System.out.println(item.getStock());
+    // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
+    return new ResponseEntity<CartResponse>(
+        BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.MOVED_TO_LIST), HttpStatus.OK);
+  }
+
+  @RequestMapping(value = "/update-inventory", method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> updateStoreInventory(@Valid @RequestBody UploadInventory uploadRequest, Errors errors) {
+    if (errors.hasErrors()) {
+      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+    }
+    logger.debug("no stores found nearby lat {} & lng {}", uploadRequest.toString());
+    ItemEntity response = itemservice.findByUpc(uploadRequest.getUpc());
+
+    StoreItemEntity item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
+    if (item == null) {
+      StoreItemEntity sItem = new StoreItemEntity();
+      long time = System.currentTimeMillis();
+      sItem.setStoreId(uploadRequest.getStoreId());
+      sItem.getItem().setId(response.getId());
+      sItem.setStock(0);
+      sItem.setAdded(time);
+      sItem.setUpdated(time);
+      sItem.setListPrice((float) uploadRequest.getListPrice()); // min 0.6 factor for price
+      sItem.setSalePrice(sItem.getListPrice());
+      siRepo.save(sItem);
+      try {
+        indexer.addToIndex(response, (String) uploadRequest.getStoreId(), (float) uploadRequest.getListPrice(),
+            (float) uploadRequest.getListPrice());
+      } catch (SolrServerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    }
+    item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
+   
+    System.out.println(item.getStock());
+    service.resetStockCountafterInventoryUpdate(item, uploadRequest.getStock());
     System.out.println(item.getStock());
     // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
     return new ResponseEntity<CartResponse>(
