@@ -161,14 +161,14 @@ public class StoreInventoryController extends BaseController {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
+    System.out.println(UpcRequest.toString() + " Hi");
     List<ItemEntity> items = new ArrayList<ItemEntity>();
     List<String> upcs = UpcRequest.getListOfUpc();
     for (String upc : upcs) {
-        ItemEntity item =  itemservice.findByUpc(Long.parseLong(upc));
-        items.add(item);
+      ItemEntity item = itemservice.findByUpc(Long.parseLong(upc));
+      items.add(item);
     }
-   
-    
+
     return new ResponseEntity<List<ItemEntity>>(items, HttpStatus.OK);
   }
 
@@ -201,11 +201,11 @@ public class StoreInventoryController extends BaseController {
         e.printStackTrace();
       } catch (IOException e) {
         // TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+        e.printStackTrace();
+      }
     }
     item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
-   
+
     System.out.println(item.getStock());
     service.updateStockCountafterInventoryUpdate(item, uploadRequest.getStock());
     System.out.println(item.getStock());
@@ -243,12 +243,13 @@ public class StoreInventoryController extends BaseController {
         e.printStackTrace();
       } catch (IOException e) {
         // TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+        e.printStackTrace();
+      }
     }
     item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
-   
+
     System.out.println(item.getStock());
+    item.setListPrice((float) uploadRequest.getListPrice());
     service.resetStockCountafterInventoryUpdate(item, uploadRequest.getStock());
     System.out.println(item.getStock());
     // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
