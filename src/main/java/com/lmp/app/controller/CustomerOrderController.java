@@ -76,7 +76,13 @@ public class CustomerOrderController extends BaseController {
 	    if (errors.hasErrors()) {
 	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
 	    }
-	    return new ResponseEntity<CustomerOrder>(service.getOrdersByIdAndStoreId(cRequest.getOrderId(),cRequest.getStoreId()), HttpStatus.OK);
+	    CustomerOrder custom = service.getOrdersByIdAndStoreId(cRequest.getOrderId(),cRequest.getStoreId());
+	    if(custom!=null && !custom.equals(null)){
+	    	return new ResponseEntity<CustomerOrder>(custom, HttpStatus.OK);
+	    }
+	    else{
+	    	return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+	    }
 	  }
 
   @RequestMapping(value = "/order/update", method = RequestMethod.POST)
