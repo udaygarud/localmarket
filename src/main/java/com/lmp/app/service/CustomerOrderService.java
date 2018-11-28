@@ -52,6 +52,12 @@ public class CustomerOrderService {
     return entity.isPresent() ? entity.get().toCustomerOrder() : null;
   }
   
+  public CustomerOrder getOrdersByIdAndStoreId(String orderId,String storeId) {    
+	    Optional<CustomerOrderEntity> entity = orderRepo.findByIdAndStoreId(orderId,storeId);
+	    
+	    return entity.isPresent() ? entity.get().toCustomerOrder() : null;
+	  }
+  
   public boolean updateOrder(CustomerOrderRequest cRequest) {
     Optional<CustomerOrderEntity> optional = orderRepo.findById(cRequest.getOrderId());
     if(!optional.isPresent()) {

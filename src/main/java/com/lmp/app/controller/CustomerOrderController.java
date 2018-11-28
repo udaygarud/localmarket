@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lmp.app.entity.CustomerOrder;
 import com.lmp.app.exceptions.UnauthorizedException;
 import com.lmp.app.model.BaseResponse;
+import com.lmp.app.model.CustomerOrderReq;
 import com.lmp.app.model.CustomerOrderRequest;
 import com.lmp.app.model.StoreRequest;
 import com.lmp.app.model.validator.CustomerOrderRequestValidator;
@@ -68,6 +69,15 @@ public class CustomerOrderController extends BaseController {
     logger.info("customer order for order id {} ", id);
     return new ResponseEntity<CustomerOrder>(service.getOrdersById(id), HttpStatus.OK);
   }
+  
+  @RequestMapping(value = "/order/getOrderDetails", method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> getOrder(@Valid @RequestBody CustomerOrderReq cRequest, Errors errors) {
+	    if (errors.hasErrors()) {
+	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+	    }
+	    return new ResponseEntity<CustomerOrder>(service.getOrdersByIdAndStoreId(cRequest.getOrderId(),cRequest.getStoreId()), HttpStatus.OK);
+	  }
 
   @RequestMapping(value = "/order/update", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
@@ -79,6 +89,8 @@ public class CustomerOrderController extends BaseController {
     service.updateOrder(cRequest);
    return new ResponseEntity<BaseResponse>(BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.ORDER_UPDATED), HttpStatus.OK);
   }
+  
+  
   
   @RequestMapping(value = "/store-order", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
