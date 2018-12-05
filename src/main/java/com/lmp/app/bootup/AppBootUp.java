@@ -130,11 +130,11 @@ public class AppBootUp {
   private void seedTestUsers() {
     List<String> emailIds = new ArrayList<>();
     emailIds.add("123");
-    emailIds.add("skawaleonline@gmail.com");
+    /* emailIds.add("skawaleonline@gmail.com");
     emailIds.add("sumit@plmlogix.com");
     emailIds.add("store1-owner@plmlogix.com");
     emailIds.add("store2-owner@plmlogix.com");
-    emailIds.add("store3-owner@plmlogix.com");
+    emailIds.add("store3-owner@plmlogix.com"); */
     for (String string : emailIds) {
       UserEntity entity = new UserEntity();
       entity.setId(string);

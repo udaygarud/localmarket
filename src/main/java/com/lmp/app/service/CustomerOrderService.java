@@ -105,7 +105,7 @@ public class CustomerOrderService {
     // if all good place the order
     CustomerOrderEntity saved = orderRepo.save(CustomerOrderEntity.fromCart(cart));
     // update stock for all items in cart
-    sItemService.updateStockCount(cart.getItems(), false);
+    //sItemService.updateStockCount(cart.getItems(), false);
     cRequest.setOrderId(saved.getId());
     //queue the order
     /*try {
@@ -136,6 +136,7 @@ public class CustomerOrderService {
       throw new InvalidOrderStatusException();
     }
     customerOrderEntity.setStatus(OrderStatus.NEW);
+    sItemService.updateStockCount(customerOrderEntity.getItems(), false);
     customerOrderEntity.setOrderedOn(System.currentTimeMillis());
     customerOrderEntity = orderRepo.save(customerOrderEntity);
 
