@@ -67,6 +67,9 @@ public class CustomerOrderService {
     entity.setStatus(OrderStatus.valueOf(cRequest.getOrderStatus()));
     entity.setOrderedOn(System.currentTimeMillis());
     entity = orderRepo.save(entity);
+    if(cRequest.getOrderStatus().equals(OrderStatus.CANCELLED.getName())){
+      sItemService.updateStockCount(entity.getItems(), true);
+    }
     return true;
   }
   public SearchResponse<CustomerOrder> getOrdersByUserId(CustomerOrderRequest request) {
@@ -171,7 +174,7 @@ public class CustomerOrderService {
     customerOrderEntity = orderRepo.save(customerOrderEntity);
     // update the product stocks 
     // update stock for all items in cart
-    sItemService.updateStockCount(customerOrderEntity.getItems(), true);
+    //sItemService.updateStockCount(customerOrderEntity.getItems(), true);
 
     return customerOrderEntity.toCustomerOrder();
   }
