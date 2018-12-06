@@ -67,7 +67,8 @@ public class CustomerOrderService {
     entity.setStatus(OrderStatus.valueOf(cRequest.getOrderStatus()));
     entity.setOrderedOn(System.currentTimeMillis());
     entity = orderRepo.save(entity);
-    if(cRequest.getOrderStatus().equals(OrderStatus.CANCELLED.getName())){
+    System.out.println(OrderStatus.CANCELLED + " Status " + cRequest.getOrderStatus());
+    if(cRequest.getOrderStatus().equals("CANCELLED")){
       sItemService.updateStockCount(entity.getItems(), true);
     }
     return true;
