@@ -23,6 +23,7 @@ import com.google.common.base.Strings;
 import com.lmp.app.entity.Inventory;
 import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ShoppingCart.CartItem;
+import com.lmp.app.entity.ShoppingWishList.WishItem;
 import com.lmp.app.exceptions.ItemNotInStockException;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.SearchRequest;
@@ -252,6 +253,13 @@ public class StoreInventoryService {
     Optional<StoreItemEntity> sItem = repo.findById(id);
     return sItem.isPresent() ? sItem.get().toCartItem() : null;
   }
+  
+  public WishItem findByid(String id) {
+	    Optional<StoreItemEntity> sItem = repo.findById(id);
+	    return sItem.isPresent() ? sItem.get().toWishItem() : null;
+	  }
+
+  
   public StoreItemEntity findByStoreIdanditemid(String storeid, String itemid) {
     StoreItemEntity sItem = repo.findByStoreIdAndItemId(storeid,itemid);
     return sItem;
