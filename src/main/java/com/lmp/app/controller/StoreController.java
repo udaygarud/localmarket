@@ -1,6 +1,10 @@
 package com.lmp.app.controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.validation.Valid;
 
@@ -36,6 +40,7 @@ import com.lmp.app.utils.ValidationErrorBuilder;
 import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.StoreEntity;
 import com.lmp.db.pojo.StoreEntity.StoreCapabilities;
+import com.lmp.db.pojo.StoreEntityTime;
 import com.lmp.db.pojo.StoreItemEntity;
 import com.lmp.db.pojo.UserEntity;
 import com.lmp.db.repository.StoreRepository;
@@ -87,11 +92,30 @@ public class StoreController extends BaseController {
     }
     System.out.println(sRequest.getLocation());
     StoreEntity store = storeService.registerStore(sRequest);
+    //current time in milliseconds
+    long currentDateTime = System.currentTimeMillis();
+   
+    //creating Date from millisecond
+//    Date currentDate = new Date(currentDateTime);
+//    System.out.println("current Date: " +currentDateTime+" date "+ currentDate);
+//    DateFormat df = new SimpleDateFormat("dd:MM:yy:HH:mm:ss");
+//    System.out.println("Milliseconds to Date: " + df.format(currentDate));
+
+    StoreEntityTime st = new StoreEntityTime();
+    st.setId(store.getId());
+    st.setLocation(store.getLocation());
+    st.setName(store.getName());
+    st.setPhoneNumber(store.getPhoneNumber());
+    st.setStoreOwner(store.getStoreOwner());
+    st.setAddress(store.getAddress());
+    st.setCapabilities(store.getCapabilities());
+    st.setFranchise(store.getFranchise());
+    st.setTime(currentDateTime);
     if(store == null) {
       logger.debug("store registration failed");
       return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return new ResponseEntity<StoreEntity>(store, HttpStatus.OK);
+    return new ResponseEntity<StoreEntityTime>(st, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/user/register-new", method = RequestMethod.POST)
