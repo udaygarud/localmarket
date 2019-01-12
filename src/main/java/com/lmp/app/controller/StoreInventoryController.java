@@ -1,7 +1,9 @@
 package com.lmp.app.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,10 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.google.common.base.Strings;
+import com.lmp.app.entity.Inventory;
+import com.lmp.app.entity.Item;
+import com.lmp.app.entity.ProductInformation;
+import com.lmp.app.entity.StoreInventoryV2;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.ResponseFilter;
@@ -26,8 +32,12 @@ import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.StoreItemEntity;
 import com.lmp.db.repository.StoreInventoryRepository;
 import com.lmp.solr.indexer.SolrIndexer;
+import com.sun.tools.javac.jvm.Items;
 
 import org.apache.solr.client.solrj.SolrServerException;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,10 +134,9 @@ public class StoreInventoryController extends BaseController {
   @RequestMapping(value = "/searchHistory", method = RequestMethod.GET)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> getHistory(@RequestParam(value = "emailId", required = false) String emailId,
-      @RequestParam(value = "uId", required = false) String uId) {
+    @RequestParam(value = "uId", required = false) String uId) {
     SearchResponse<String> response = new SearchResponse<>();
     List<String> list = new ArrayList<>();
-    System.out.println("In search History" + emailId + "Hui " + uId);
     // when uId is only present
     if (uId != null && !uId.equals("") && emailId.isEmpty()) {
       Map<Integer, String> map = service.getHistory(uId, "");
@@ -161,15 +170,25 @@ public class StoreInventoryController extends BaseController {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
-    System.out.println(UpcRequest.toString() + " Hi");
+    System.out.println(UpcRequest.toString() + " Hi IN PRODUCT ");
     List<ItemEntity> items = new ArrayList<ItemEntity>();
     List<String> upcs = UpcRequest.getListOfUpc();
     for (String upc : upcs) {
       ItemEntity item = itemservice.findByUpc(Long.parseLong(upc));
       items.add(item);
     }
-
-    return new ResponseEntity<List<ItemEntity>>(items, HttpStatus.OK);
+    
+    List<ProductInformation> prodList =new ArrayList<ProductInformation>();   
+    ProductInformation productInfo = new ProductInformation();
+    Map<String,List<String>> stores = new HashMap<>();
+    for(int i=0 ;i<items.size();i++){
+    	List<String> list = service.getStores(items.get(i).getId());
+      stores.put(items.get(i).getId(), list);
+      productInfo.setItem(items.get(i));	
+      productInfo.setStores(list);
+      prodList.add(productInfo);
+   }
+    return new ResponseEntity<List<ProductInformation>>(prodList, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/upload-inventory", method = RequestMethod.POST)
