@@ -3,8 +3,10 @@ package com.lmp.app.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,34 +63,36 @@ public class SearchResponse<T> extends BaseResponse {
   }
 
   private static Map<String, Inventory> buildStoreItemMapV2(List<StoreItemEntity> items,Map<String,List<String>> stores) {
-    Map<String, Inventory> map = new HashMap<>();
-    for(StoreItemEntity ie : items) {
-      Item item = Item.fromStoreInventoryEntity(ie);
-     
-      List<String> eachitem = stores.get(item.getId());
-      
-      eachitem.forEach(storerecord -> {
-       
-        if(map.containsKey(ie.getId())){
-          ((StoreInventoryV2)map.get(ie.getId())).addStore(storerecord);
-        }else{
-          map.put(item.getId(), new StoreInventoryV2(item, ie.getStoreId()));
-        }
-      });
+	   Map<String, Inventory> map = new HashMap<>();
+	   Set<Long> allUPC = new HashSet<>();
+	   for(StoreItemEntity ie : items) {
+	     Item item = Item.fromStoreInventoryEntity(ie);
+	     if(allUPC.add(item.getUpc())){
+	         List<String> eachitem = stores.get(item.getId());
+	         eachitem.forEach(storerecord -> {
+	           if(map.containsKey(ie.getId())){
+	             ((StoreInventoryV2)map.get(ie.getId())).addStore(storerecord);
+	           }else{
+	             map.put(item.getId(), new StoreInventoryV2(item, storerecord));
+	           }
+	         });
+	     }
 
-      /* if(map.containsKey(item.getId())) {
-        List<String> eachitem = stores.get(item.getId());
-        eachitem.forEach(storerecord -> {
-          ((StoreInventoryV2)map.get(ie.getStoreId())).addStore(storerecord);
-        });
-       
-      } else {
-        map.put(item.getId(), new StoreInventoryV2(item, ie.getStoreId()));
-      } */
-    }
-    return map;
-  }
 
+	     /* if(map.containsKey(item.getId())) {
+	       List<String> eachitem = stores.get(item.getId());
+	       eachitem.forEach(storerecord -> {
+	         ((StoreInventoryV2)map.get(ie.getStoreId())).addStore(storerecord);
+	       });
+
+	     } else {
+	       map.put(item.getId(), new StoreInventoryV2(item, ie.getStoreId()));
+	     } */
+	   }
+	   return map;
+	 }
+
+	
   public static SearchResponse<ItemEntity> buildItemResponse(Page<ItemDoc> result, Iterable<ItemEntity> items) {
     SearchResponse<ItemEntity> response = new SearchResponse<>();
     response.statusCode = HttpStatus.OK.value();

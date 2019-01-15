@@ -312,4 +312,21 @@ public class StoreInventoryController extends BaseController {
         BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.MOVED_TO_LIST), HttpStatus.OK);
   }
 
+  
+  
+  @RequestMapping(value = "/filters", method = RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> getFilters(@Valid @RequestBody SearchRequest sRequest, Errors errors) {
+       System.out.println(sRequest.toString() + " Hi");
+    if (errors.hasErrors()) {
+      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+    }
+
+    List<ResponseFilter> facets = filterService.getFiltersFor(sRequest);
+
+    System.out.println("response "+facets.toString());
+    return new ResponseEntity<List<ResponseFilter>>(facets, HttpStatus.OK);
+  }
+  
+  
 }
