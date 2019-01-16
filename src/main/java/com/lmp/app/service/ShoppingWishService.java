@@ -35,6 +35,7 @@ public class ShoppingWishService {
 	  }
 
 	  public ShoppingWishList getCart(String id) {
+		  System.out.println("getting cart for "+id);
 	    if(Strings.isNullOrEmpty(id)) {
 	      return null;
 	    }

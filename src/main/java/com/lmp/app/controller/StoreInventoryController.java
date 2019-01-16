@@ -311,8 +311,6 @@ public class StoreInventoryController extends BaseController {
     return new ResponseEntity<CartResponse>(
         BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.MOVED_TO_LIST), HttpStatus.OK);
   }
-
-  
   
   @RequestMapping(value = "/filters", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
@@ -327,6 +325,5 @@ public class StoreInventoryController extends BaseController {
     System.out.println("response "+facets.toString());
     return new ResponseEntity<List<ResponseFilter>>(facets, HttpStatus.OK);
   }
-  
-  
+
 }

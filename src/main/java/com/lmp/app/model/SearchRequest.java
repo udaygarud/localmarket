@@ -12,6 +12,7 @@ public class SearchRequest extends PageableRequest {
 
   private String query;
   private String storeId;
+  private String email;
   private Map<String, List<String>> filters = new HashMap<>();
   private List<String> fields = new ArrayList<>();
   private double lat;
@@ -20,7 +21,13 @@ public class SearchRequest extends PageableRequest {
 
   public SearchRequest() {
   }
-  public SearchRequest(int page, int count) {
+  public String getEmail() {
+	return email;
+}
+public void setEmail(String email) {
+	this.email = email;
+}
+public SearchRequest(int page, int count) {
     super(page, count);
   }
 

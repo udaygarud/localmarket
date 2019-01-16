@@ -22,6 +22,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.lmp.app.entity.Inventory;
 import com.lmp.app.entity.Item;
+import com.lmp.app.entity.ShoppingWishList;
 import com.lmp.app.entity.ShoppingCart.CartItem;
 import com.lmp.app.entity.ShoppingWishList.WishItem;
 import com.lmp.app.exceptions.ItemNotInStockException;
@@ -53,6 +54,8 @@ public class StoreInventoryService {
   private StoreInventoryRepository siRepo;
   @Autowired
   SearchHistoryRepository historyRepo;
+  @Autowired
+  private ShoppingWishService service;
 
 
   public Item findStoreItemByUpc(long upc, String storeId) {
@@ -76,6 +79,12 @@ public class StoreInventoryService {
 
   private BaseResponse searchDBForDocs(SearchRequest sRequest, List<String> storeIds, Page<ItemDoc> docs, boolean v2) {
     Page<StoreItemEntity> items = null;
+    List<WishItem> wishList = new ArrayList<>();
+    if(service.getCart(sRequest.getEmail()) != null){
+    	wishList = service.getCart(sRequest.getEmail()).getItems();
+    }
+     
+	   //System.out.println("list "+list.getItems().size());
     if (docs != null) {
       List<String> ids = new ArrayList<>();
       docs.getContent().forEach(itemDoc -> {
@@ -102,7 +111,7 @@ public class StoreInventoryService {
 
        }
       //storeService.getStores("5bade68f11632a18ad6e768f");
-      return SearchResponse.buildStoreInventoryResponse(items, docs.getTotalElements(), sRequest.getPage(), v2 ,storemap);
+      return SearchResponse.buildStoreInventoryResponse(items, docs.getTotalElements(), sRequest.getPage(), v2 ,storemap,wishList);
     } else {
       
       // search for all within store
@@ -123,7 +132,7 @@ public class StoreInventoryService {
         });
         storemap.put(ie.getId(), filteredstores);
        }
-    return SearchResponse.buildStoreInventoryResponse(items, v2,storemap);
+    return SearchResponse.buildStoreInventoryResponse(items, v2,storemap,wishList);
   }
 
   @Cacheable("store-items")

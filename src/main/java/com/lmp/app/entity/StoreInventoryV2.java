@@ -7,22 +7,33 @@ public class StoreInventoryV2 implements Inventory{
 
   private Item item;
   private List<String> stores = new ArrayList<>();
+  private boolean isPresentInWishList;
   
-  public StoreInventoryV2(Item item, List<String> stores) {
+  public StoreInventoryV2(Item item, List<String> stores,boolean ispresent) {
     super();
     this.item = item;
     this.stores = stores;
+    this.isPresentInWishList = ispresent;
   }
   
-  public StoreInventoryV2(Item item, String store) {
+  public StoreInventoryV2(Item item, String store,boolean ispresent) {
     super();
     this.item = item;
     this.stores.add(store);
+    this.isPresentInWishList = ispresent;
   }
   public Item getItem() {
     return item;
   }
-  public void setItem(Item item) {
+  public boolean isIspresentinWishList() {
+	return isPresentInWishList;
+}
+
+public void setIspresentinWishList(boolean ispresentinWishList) {
+	this.isPresentInWishList = ispresentinWishList;
+}
+
+public void setItem(Item item) {
     this.item = item;
   }
   public List<String> getStores() {
