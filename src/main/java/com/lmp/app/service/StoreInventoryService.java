@@ -32,6 +32,7 @@ import com.lmp.app.model.SearchResponse;
 import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.SearchHistoryEntity;
 import com.lmp.db.pojo.StoreItemEntity;
+import com.lmp.db.repository.CustomStoreInventoryRepository;
 import com.lmp.db.repository.SearchHistoryRepository;
 import com.lmp.db.repository.StoreInventoryRepository;
 import com.lmp.solr.SolrSearchService;
@@ -55,9 +56,8 @@ public class StoreInventoryService {
   @Autowired
   SearchHistoryRepository historyRepo;
   @Autowired
-  private ShoppingWishService service;
-
-
+  private ShoppingWishService wishservice;
+  
   public Item findStoreItemByUpc(long upc, String storeId) {
 	  ItemEntity entity = itemService.findByUpc(upc);
 	  if(entity == null) {
@@ -80,8 +80,8 @@ public class StoreInventoryService {
   private BaseResponse searchDBForDocs(SearchRequest sRequest, List<String> storeIds, Page<ItemDoc> docs, boolean v2) {
     Page<StoreItemEntity> items = null;
     List<WishItem> wishList = new ArrayList<>();
-    if(service.getCart(sRequest.getEmail()) != null){
-    	wishList = service.getCart(sRequest.getEmail()).getItems();
+    if(wishservice.getCart(sRequest.getEmail()) != null){
+    	wishList = wishservice.getCart(sRequest.getEmail()).getItems();
     }
      
 	   //System.out.println("list "+list.getItems().size());
@@ -344,6 +344,7 @@ public class StoreInventoryService {
   @Transactional
   public boolean updateStockCountafterInventoryUpdate(StoreItemEntity item, int stock) {
     item.setStock( item.getStock() + stock);
+    
     repo.save(item);
     return true;
   }
@@ -353,6 +354,18 @@ public class StoreInventoryService {
     item.setStock( stock);
     repo.save(item);
     return true;
+  }
+  
+  @Transactional
+  public boolean updateOnsale(StoreItemEntity item,float salePrice){
+	  item.setOnSale(true);
+	  item.setSalePrice(salePrice);
+	  repo.save(item);
+	  return true;
+  }
+  @Transactional
+  public BaseResponse getAllStoresbyOnsale(){
+	  return null;
   }
 
 }

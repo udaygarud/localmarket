@@ -104,8 +104,9 @@ public class StoreInventoryController extends BaseController {
   @RequestMapping(value = "v2/search", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> lookupStoreInventoryV2(@Valid @RequestBody SearchRequest searchRequest, Errors errors,
-      @RequestHeader(value = "emailId") String emailId, @RequestHeader(value = "uId") String uId) {
-    if (errors.hasErrors()) {
+      @RequestHeader(value = "emailId",required = false) String emailId, @RequestHeader(value = "uId",required = false) String uId) {
+	  if (errors.hasErrors()) {
+    	System.out.println("errors");
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
     logger.info("searching for the request " + searchRequest.toString());
@@ -324,6 +325,45 @@ public class StoreInventoryController extends BaseController {
 
     System.out.println("response "+facets.toString());
     return new ResponseEntity<List<ResponseFilter>>(facets, HttpStatus.OK);
+  }
+  
+  @RequestMapping(value = "/setOnSale",method =RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> setOnSaleProducts(@Valid @RequestBody UploadInventory updateRequest, Errors errors){
+	  if (errors.hasErrors()) {
+	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+	    }
+	  ItemEntity response = itemservice.findByUpc(updateRequest.getUpc());
+
+	    StoreItemEntity item = service.findByStoreIdanditemid(updateRequest.getStoreId(), response.getId());
+	    if (item == null) {
+	      StoreItemEntity sItem = new StoreItemEntity();
+	      long time = System.currentTimeMillis();
+	      sItem.setStoreId(updateRequest.getStoreId());
+	      sItem.getItem().setId(response.getId());
+	      sItem.setStock(0);
+	      sItem.setAdded(time);
+	      sItem.setUpdated(time);
+	      sItem.setListPrice((float) updateRequest.getListPrice()); // min 0.6 factor for price
+	      sItem.setSalePrice(sItem.getListPrice());
+	      siRepo.save(sItem);
+	      try {
+	        indexer.addToIndex(response, (String) updateRequest.getStoreId(), (float) updateRequest.getListPrice(),
+	            (float) updateRequest.getListPrice());
+	      } catch (SolrServerException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	      } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	      }
+	    }
+	    item = service.findByStoreIdanditemid(updateRequest.getStoreId(), response.getId());
+
+	    service.updateOnsale(item, updateRequest.getSalePrice());
+	    // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
+	    return new ResponseEntity<CartResponse>(
+	        BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.PRODUCT_UPDATED), HttpStatus.OK);
   }
 
 }

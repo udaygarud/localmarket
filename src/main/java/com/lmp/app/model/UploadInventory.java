@@ -15,9 +15,27 @@ public class UploadInventory {
   private long upc;
   private double listPrice;
   private int stock;
+  private float salePrice;
+  private boolean onSale;
 
  
-  public UploadInventory() {
+  public float getSalePrice() {
+	return salePrice;
+}
+
+public void setSalePrice(float salePrice) {
+	this.salePrice = salePrice;
+}
+
+public boolean isOnSale() {
+	return onSale;
+}
+
+public void setOnSale(boolean onSale) {
+	this.onSale = onSale;
+}
+
+public UploadInventory() {
   }
 
   public double getListPrice() {
@@ -52,7 +70,9 @@ public class UploadInventory {
     return "listPrice: " +  listPrice 
         + "storeId: " + storeId
         + "upc: " + upc
-        + "stock: " + stock;
+        + "stock: " + stock
+    	+ "salePrice"+salePrice
+    	+ "onSale"+onSale;
   }
 
 }
