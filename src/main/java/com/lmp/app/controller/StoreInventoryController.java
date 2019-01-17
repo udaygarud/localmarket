@@ -104,20 +104,23 @@ public class StoreInventoryController extends BaseController {
   @RequestMapping(value = "v2/search", method = RequestMethod.POST)
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> lookupStoreInventoryV2(@Valid @RequestBody SearchRequest searchRequest, Errors errors,
-      @RequestHeader(value = "emailId") String emailId, @RequestHeader(value = "uId") String uId) {
+      @RequestHeader(value = "emailId",required = false) String emailId, @RequestHeader(value = "uId",required = false) String uId) {
     if (errors.hasErrors()) {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
     logger.info("searching for the request " + searchRequest.toString());
     // emailId , uId- unique id
     // when uId is only present
+    System.out.println(" hh "+emailId +" mm "+uId +" get query "+searchRequest.getQuery());
     if (!Strings.isNullOrEmpty(searchRequest.getQuery())) {
       // if(!uId.equals("") && uId!=null && emailId.isEmpty()||emailId.equals(null)){
       if (!uId.equals("") && uId != null && Strings.isNullOrEmpty(emailId)) {
+    	  System.out.println(" nn ");
         service.insertHistoryBasedOnUID(uId, searchRequest.getQuery());
       }
       // when both present
       else if (uId != null && !uId.isEmpty() && !emailId.isEmpty() && emailId != null) {
+    	  System.out.println(" 222 ");
         service.insertHistoryBasedOnEmailAndUID(emailId, uId, searchRequest.getQuery());
       }
     }
