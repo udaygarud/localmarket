@@ -365,5 +365,42 @@ public class StoreInventoryController extends BaseController {
 	    return new ResponseEntity<CartResponse>(
 	        BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.PRODUCT_UPDATED), HttpStatus.OK);
   }
+  
+  @RequestMapping(value = "/removeProductsFromOnsale",method =RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> removeProductsFromOnsale(@Valid @RequestBody UploadInventory updateRequest, Errors errors){
+	  if (errors.hasErrors()) {
+	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+	    }
+	  ItemEntity response = itemservice.findByUpc(updateRequest.getUpc());
 
+	    StoreItemEntity item = service.findByStoreIdanditemid(updateRequest.getStoreId(), response.getId());
+	    if (item == null) {
+	      StoreItemEntity sItem = new StoreItemEntity();
+	      long time = System.currentTimeMillis();
+	      sItem.setStoreId(updateRequest.getStoreId());
+	      sItem.getItem().setId(response.getId());
+	      sItem.setStock(0);
+	      sItem.setAdded(time);
+	      sItem.setUpdated(time);
+	      sItem.setListPrice((float) updateRequest.getListPrice()); // min 0.6 factor for price
+	      sItem.setSalePrice(sItem.getListPrice());
+	      siRepo.save(sItem);
+	      try {
+	        indexer.addToIndex(response, (String) updateRequest.getStoreId(), (float) updateRequest.getListPrice(),
+	            (float) updateRequest.getListPrice());
+	      } catch (SolrServerException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	      } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	      }
+	    }
+	    item = service.findByStoreIdanditemid(updateRequest.getStoreId(), response.getId());
+	    service.removeFromOnsale(item, updateRequest.getSalePrice());
+	    // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
+	    return new ResponseEntity<CartResponse>(
+	        BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.PRODUCT_UPDATED), HttpStatus.OK);
+  }
 }

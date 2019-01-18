@@ -364,8 +364,11 @@ public class StoreInventoryService {
 	  return true;
   }
   @Transactional
-  public BaseResponse getAllStoresbyOnsale(){
-	  return null;
+  public boolean removeFromOnsale(StoreItemEntity item,float salePrice){
+	  item.setOnSale(false);
+	  item.setSalePrice(item.getListPrice());
+	  repo.save(item);
+	  return true;
   }
 
 }

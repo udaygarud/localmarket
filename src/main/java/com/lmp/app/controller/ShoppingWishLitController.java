@@ -64,6 +64,7 @@ public class ShoppingWishLitController extends BaseController{
 	    if (errors.hasErrors()) {
 	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
 	    }
+	    System.out.println("add in wish list");
 	    logger.info("shopping wish list request " + shoppingWishListRequest.toString());
 	    System.out.println(" in wish ");
 	    ShoppingWishList cart = service.add(shoppingWishListRequest);
@@ -80,6 +81,7 @@ public class ShoppingWishLitController extends BaseController{
 	    if (errors.hasErrors()) {
 	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
 	    }
+	    System.out.println("remove from wish list");
 	    logger.info("shopping cart request " + shoppingWishListRequest.toString());
 	    ShoppingWishList cart = service.remove(shoppingWishListRequest);
 	    if (cart == null) {

@@ -88,11 +88,11 @@ public class ShoppingWishService {
 	    // requested item from different store
 	    if(cart.getStoreId() != null && !cart.getStoreId().equals(item.getStoreId())) {
 	      // if force flag is true then clear the current cart and add incoming item
-	      if(cartRequest.isClearFirst()) {
-	        clear(cart);
-	      } else {
-	        throw new MuliplteStoreInCartException();
-	      }
+//	      if(cartRequest.isClearFirst()) {
+//	        clear(cart);
+//	      } else {
+//	        throw new MuliplteStoreInCartException();
+//	      }
 	    }
 	    cart.setStoreId(item.getStoreId());
 	    cart.addToWish(item, cartRequest.getQuantity());
