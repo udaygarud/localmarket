@@ -18,6 +18,7 @@ import com.lmp.app.entity.Inventory;
 import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ShoppingWishList;
 import com.lmp.app.entity.ShoppingWishList.WishItem;
+import com.lmp.app.entity.StoreInformation;
 import com.lmp.app.entity.StoreInventory;
 import com.lmp.app.entity.StoreInventoryV2;
 import com.lmp.app.service.ShoppingWishService;
@@ -52,7 +53,7 @@ public class SearchResponse<T> extends BaseResponse {
     response.results = CustomerOrderEntity.toCustomerOrderList(page.getContent());
     return response;
   }
-  private static Map<String, Inventory> buildStoreItemMap(List<StoreItemEntity> items,Map<String,List<String>> stores) {
+  private static Map<String, Inventory> buildStoreItemMap(List<StoreItemEntity> items,Map<String,List<StoreInformation>> stores) {
     Map<String, Inventory> map = new HashMap<>();
     for(StoreItemEntity ie : items) {
       Item item = Item.fromStoreInventoryEntity(ie);
@@ -67,7 +68,7 @@ public class SearchResponse<T> extends BaseResponse {
     return map;
   }
 
-  private static Map<String, Inventory> buildStoreItemMapV2(List<StoreItemEntity> items,Map<String,List<String>> stores,List<WishItem>list) {
+  private static Map<String, Inventory> buildStoreItemMapV2(List<StoreItemEntity> items,Map<String,List<StoreInformation>> stores,List<WishItem>list) {
 	   Map<String, Inventory> map = new HashMap<>();
 	   Set<Long> allUPC = new HashSet<>();
 	   ArrayList<String> wishListIds = new ArrayList<>();
@@ -80,23 +81,22 @@ public class SearchResponse<T> extends BaseResponse {
 	   for(StoreItemEntity ie : items) {
 	     Item item = Item.fromStoreInventoryEntity(ie);
 	     if(allUPC.add(item.getUpc())){
-	         List<String> eachitem = stores.get(item.getId());
-	         
-	         eachitem.forEach(storerecord -> {
-	           System.out.println("ids "+ie.getId());
-	           if(map.containsKey(ie.getId())){
-	             ((StoreInventoryV2)map.get(ie.getId())).addStore(storerecord);
-	           }else{
-	        	   map.put(item.getId(), new StoreInventoryV2(item, storerecord,false));
-	        	 if(wishListIds.contains(item.getId())){
-	        		 System.out.println("present is wishlist ");
-	        		 map.put(item.getId(), new StoreInventoryV2(item, storerecord,true));
-	        	 } else {
-	        		 map.put(item.getId(), new StoreInventoryV2(item, storerecord,false));
-	        	 }
-	             
-	           }
-	         });
+	         List<StoreInformation> eachitem = stores.get(item.getId());
+	         for (StoreInformation storeInformation : eachitem) {
+	        	 System.out.println("ids "+ie.getId());
+	        	 if(map.containsKey(ie.getId())){
+		             ((StoreInventoryV2)map.get(ie.getId())).addStore(storeInformation);
+		           }else{
+		        	   map.put(item.getId(), new StoreInventoryV2(item, storeInformation,false));
+		        	 if(wishListIds.contains(item.getId())){
+		        		 System.out.println("present is wishlist ");
+		        		 map.put(item.getId(), new StoreInventoryV2(item, storeInformation,true));
+		        	 } else {
+		        		 map.put(item.getId(), new StoreInventoryV2(item, storeInformation,false));
+		        	 }
+		             
+		           }
+			}
 	     }
 
 
@@ -123,7 +123,7 @@ public class SearchResponse<T> extends BaseResponse {
     return response;
   }
 
-  public static SearchResponse<Inventory> buildStoreInventoryResponse(Page<StoreItemEntity> page, boolean v2,Map<String,List<String>> stores,List<WishItem> list) {
+  public static SearchResponse<Inventory> buildStoreInventoryResponse(Page<StoreItemEntity> page, boolean v2,Map<String,List<StoreInformation>> stores,List<WishItem> list) {
     if(page == null || !page.hasContent()) {
       SearchResponse<Inventory> blank = new SearchResponse<>();
       return blank.blank();
@@ -141,12 +141,12 @@ public class SearchResponse<T> extends BaseResponse {
     return response;
   }
 
-  public static SearchResponse<? super Inventory> buildStoreInventoryResponse(Page<StoreItemEntity> page, long count, boolean v2,Map<String,List<String>> stores,List<WishItem> list) {
+  public static SearchResponse<? super Inventory> buildStoreInventoryResponse(Page<StoreItemEntity> page, long count, boolean v2,Map<String,List<StoreInformation>> stores,List<WishItem> list) {
     SearchResponse<? super Inventory> response = buildStoreInventoryResponse(page, v2,stores,list);
     response.found = count;
     return response;
   }
-  public static SearchResponse<? super Inventory> buildStoreInventoryResponse(Page<StoreItemEntity> page, long count, int pageNo, boolean v2,Map<String,List<String>> stores,List<WishItem> list) {
+  public static SearchResponse<? super Inventory> buildStoreInventoryResponse(Page<StoreItemEntity> page, long count, int pageNo, boolean v2,Map<String,List<StoreInformation>> stores,List<WishItem> list) {
     SearchResponse<? super Inventory> response = buildStoreInventoryResponse(page, count, v2,stores,list);
     response.page = pageNo;
     return response;

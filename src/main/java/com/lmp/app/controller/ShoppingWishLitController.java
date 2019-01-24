@@ -71,7 +71,7 @@ public class ShoppingWishLitController extends BaseController{
 	    for (WishItem ie : list) {
 	    	Item item = new Item();
 	    	 BeanUtils.copyProperties(ie.getItem(), item);
-	    	responseList.add(new StoreInventoryV2(item, siservice.getStores(ie.getItem().getId()), true));
+	    	responseList.add(new StoreInventoryV2(item, siservice.getStoreswithInfo(ie.getItem().getId()), true));
 			
 		}
 	  //  BaseResponse response = (BaseResponse) responseList;

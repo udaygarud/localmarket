@@ -25,6 +25,7 @@ import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ShoppingWishList;
 import com.lmp.app.entity.ShoppingCart.CartItem;
 import com.lmp.app.entity.ShoppingWishList.WishItem;
+import com.lmp.app.entity.StoreInformation;
 import com.lmp.app.exceptions.ItemNotInStockException;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.SearchRequest;
@@ -100,14 +101,18 @@ public class StoreInventoryService {
       } else {
         items = repo.findAllByStoreIdInAndItemIdIn(storeIds, ids, new PageRequest(0, sRequest.getRows()));
       }
-      Map<String,List<String>> storemap = new HashMap<>();
+      Map<String,List<StoreInformation>> storemap = new HashMap<>();
       for(StoreItemEntity ie : items) {
-        List<String> Dbstores = getStores(ie.getItem().getId());
-        List<String> filteredstores = new ArrayList<>();
+       // List<String> Dbstores = getStores(ie.getItem().getId());
+    	  List<StoreInformation> Dbstores = getStoreswithInfo(ie.getItem().getId());
+        List<StoreInformation> filteredstores = new ArrayList<>();
+        for (StoreInformation storeInformation : Dbstores) {
+        	if(storeIds.contains(storeInformation.getStoreId())){
+                filteredstores.add(storeInformation);
+              }
+		}
         Dbstores.forEach(i -> {
-          if(storeIds.contains(i)){
-            filteredstores.add(i);
-          }
+          
         });
         storemap.put(ie.getId(), filteredstores); 
 
@@ -123,15 +128,15 @@ public class StoreInventoryService {
         items = repo.findAllByStoreIdIn(storeIds, sRequest.pageRequesst());
       }
     }
-    Map<String,List<String>> storemap = new HashMap<>();
+    Map<String,List<StoreInformation>> storemap = new HashMap<>();
       for(StoreItemEntity ie : items) {
-        List<String> Dbstores = getStores(ie.getItem().getId());
-        List<String> filteredstores = new ArrayList<>();
-        Dbstores.forEach(i -> {
-          if(storeIds.contains(i)){
-            filteredstores.add(i);
-          }
-        });
+        List<StoreInformation> Dbstores = getStoreswithInfo(ie.getItem().getId());
+        List<StoreInformation> filteredstores = new ArrayList<>();
+        for (StoreInformation storeInformation : Dbstores) {
+        	 if(storeIds.contains(storeInformation.getStoreId())){
+                 filteredstores.add(storeInformation);
+               }
+		}
         storemap.put(ie.getId(), filteredstores);
        }
     return SearchResponse.buildStoreInventoryResponse(items, v2,storemap,wishList);
@@ -304,6 +309,25 @@ public class StoreInventoryService {
     }
     
   } 
+   
+   public List<StoreInformation> getStoreswithInfo(String itemid){
+	    List<StoreItemEntity> result = repo.findByItemId(itemid);
+	    
+	    List<StoreInformation> storeInfo = new ArrayList<>();
+	    if(result!=null){
+	      result.forEach(item ->{
+	    	  StoreInformation store = new StoreInformation();
+	    	  store.setStoreId(item.getStoreId());
+	    	  store.setOnSale(item.isOnSale());
+	    	  store.setOfferPrice(item.getSalePrice());
+	    	  storeInfo.add(store);
+	      });
+	      return storeInfo;
+	    }else{
+	      return null;
+	    }
+	    
+	  } 
   
   
   public void verifyItemStock(List<CartItem> items) {
