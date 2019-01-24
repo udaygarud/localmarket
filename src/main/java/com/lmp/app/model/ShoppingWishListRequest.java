@@ -5,8 +5,17 @@ public class ShoppingWishListRequest {
 	  private String itemId;
 	  private int quantity;
 	  private boolean clearFirst;
+	  private long upc;
 
-	  public ShoppingWishListRequest() {
+	  public long getUpc() {
+		return upc;
+	}
+
+	public void setUpc(long upc) {
+		this.upc = upc;
+	}
+
+	public ShoppingWishListRequest() {
 	  }
 
 	  public ShoppingWishListRequest(String userId) {

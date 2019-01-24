@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import com.lmp.app.entity.ShoppingWishList;
 import com.lmp.app.entity.ShoppingWishList.WishItem;
@@ -14,8 +15,10 @@ public class ShoppingWishListEntity {
 	@Id
 	  private String userId;
 	  private List<WishItem> items = new ArrayList<>();
+	 // @DBRef
+	 // private List<ItemEntity> item = new ArrayList<>();
 	  private double totalPrice;
-	  private String storeId;
+	 // private String storeId;
 	  private boolean pickupOrder;
 	  private boolean deliveryOrder;
 	  private long created;
@@ -26,7 +29,10 @@ public class ShoppingWishListEntity {
 	    BeanUtils.copyProperties(cart, entity);
 	    return entity;
 	  }
-	  public String getUserId() {
+	  
+	 
+
+	public String getUserId() {
 	    return userId;
 	  }
 	  public void setUserId(String userId) {
@@ -44,12 +50,12 @@ public class ShoppingWishListEntity {
 	  public void setTotalPrice(double totalPrice) {
 	    this.totalPrice = totalPrice;
 	  }
-	  public String getStoreId() {
-	    return storeId;
-	  }
-	  public void setStoreId(String storeId) {
-	    this.storeId = storeId;
-	  }
+//	  public String getStoreId() {
+//	    return storeId;
+//	  }
+//	  public void setStoreId(String storeId) {
+//	    this.storeId = storeId;
+//	  }
 	  public boolean isPickupOrder() {
 	    return pickupOrder;
 	  }

@@ -1,9 +1,13 @@
 package com.lmp.app.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
 import com.lmp.app.entity.CustomerOrder;
+import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ShoppingWishList;
+import com.lmp.app.entity.ShoppingWishList.WishItem;
+import com.lmp.app.entity.StoreInventoryV2;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.CheckoutRequest;
@@ -27,7 +34,9 @@ import com.lmp.app.model.ShoppingWishListRequest;
 import com.lmp.app.model.validator.WishListRequestValidator;
 import com.lmp.app.service.CustomerOrderService;
 import com.lmp.app.service.ShoppingWishService;
+import com.lmp.app.service.StoreInventoryService;
 import com.lmp.app.utils.ValidationErrorBuilder;
+import com.lmp.db.pojo.ItemEntity;
 
 @RestController
 @RequestMapping("/wishList")
@@ -39,6 +48,8 @@ public class ShoppingWishLitController extends BaseController{
 	  private ShoppingWishService service;
 	  @Autowired
 	  private CustomerOrderService orderService;
+	  @Autowired
+	  private StoreInventoryService siservice;
 
 	  @Autowired
 	  public ShoppingWishLitController(WishListRequestValidator wishRequestValidator) {
@@ -54,7 +65,18 @@ public class ShoppingWishLitController extends BaseController{
 	  @ResponseStatus(HttpStatus.OK)
 	  public ResponseEntity<?> getCart(@Valid @RequestParam("id") String id) {
 	    logger.info("getting cart with id {} " + id);
-	    return new ResponseEntity<ShoppingWishList>(service.getCart(id), HttpStatus.OK);
+	    ShoppingWishList wishList = service.getCart(id);
+	    List<WishItem> list = wishList.getItems();
+	    List<StoreInventoryV2> responseList = new ArrayList<>();
+	    for (WishItem ie : list) {
+	    	Item item = new Item();
+	    	 BeanUtils.copyProperties(ie.getItem(), item);
+	    	responseList.add(new StoreInventoryV2(item, siservice.getStores(ie.getItem().getId()), true));
+			
+		}
+	  //  BaseResponse response = (BaseResponse) responseList;
+	    return new ResponseEntity<List<StoreInventoryV2>>(responseList, HttpStatus.OK);
+	  //  return new ResponseEntity<BaseResponse>(response, HttpStatus.OK);
 	  }
 
 	  @RequestMapping(value = "/add", method = RequestMethod.POST)

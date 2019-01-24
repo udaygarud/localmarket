@@ -45,15 +45,15 @@ public class StoreItemEntity implements Comparable<StoreItemEntity>{
     return ci;
   }
   
-  public WishItem toWishItem() {
-	    WishItem ci = new WishItem();
-	    BeanUtils.copyProperties(this.getItem(), ci);
-	    BeanUtils.copyProperties(this, ci);
-	    ci.setListPrice(Math.round(this.getListPrice() * 100.0) / 100.0);
-	    ci.setOfferPrice(Math.round(this.getSalePrice() * 100.0) / 100.0);
-	    ci.setStoreId(this.storeId);
-	    return ci;
-	  }
+//  public WishItem toWishItem() {
+//	    WishItem ci = new WishItem();
+//	    BeanUtils.copyProperties(this.getItem(), ci);
+//	    BeanUtils.copyProperties(this, ci);
+//	    ci.setListPrice(Math.round(this.getListPrice() * 100.0) / 100.0);
+//	    ci.setOfferPrice(Math.round(this.getSalePrice() * 100.0) / 100.0);
+//	  //  ci.setStoreId(this.storeId);
+//	    return ci;
+//	  }
 
   
   public String getId() {

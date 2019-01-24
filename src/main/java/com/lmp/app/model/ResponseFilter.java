@@ -45,7 +45,7 @@ public class ResponseFilter {
   public static ResponseFilter booleanFilter(String fieldName) {
     ResponseFilter response = new ResponseFilter(fieldName);
     response.values.add(new CountPair("true", 1L));
-    response.values.add(new CountPair("false", 1L));
+    //response.values.add(new CountPair("false", 1L));
     return response;
   }
 

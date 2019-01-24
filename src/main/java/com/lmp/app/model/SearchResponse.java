@@ -71,7 +71,10 @@ public class SearchResponse<T> extends BaseResponse {
 	   Map<String, Inventory> map = new HashMap<>();
 	   Set<Long> allUPC = new HashSet<>();
 	   ArrayList<String> wishListIds = new ArrayList<>();
+	   System.out.println();
 	  for(WishItem wishItem : list){
+		  System.out.println("wish list id "+wishItem.getId());
+		  System.out.println("wish list id 2 "+wishItem.getItem().getId());
 		  wishListIds.add(wishItem.getId());
 	  }
 	   for(StoreItemEntity ie : items) {
@@ -80,13 +83,13 @@ public class SearchResponse<T> extends BaseResponse {
 	         List<String> eachitem = stores.get(item.getId());
 	         
 	         eachitem.forEach(storerecord -> {
-
+	           System.out.println("ids "+ie.getId());
 	           if(map.containsKey(ie.getId())){
 	             ((StoreInventoryV2)map.get(ie.getId())).addStore(storerecord);
 	           }else{
 	        	   map.put(item.getId(), new StoreInventoryV2(item, storerecord,false));
 	        	 if(wishListIds.contains(item.getId())){
-	        		 System.out.println("present is wishlist");
+	        		 System.out.println("present is wishlist ");
 	        		 map.put(item.getId(), new StoreInventoryV2(item, storerecord,true));
 	        	 } else {
 	        		 map.put(item.getId(), new StoreInventoryV2(item, storerecord,false));

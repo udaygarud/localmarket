@@ -38,6 +38,8 @@ import com.lmp.db.repository.StoreInventoryRepository;
 import com.lmp.solr.SolrSearchService;
 import com.lmp.solr.entity.ItemDoc;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
+
 @Service
 public class StoreInventoryService {
 
@@ -151,14 +153,14 @@ public class StoreInventoryService {
       }
     }
     Page<ItemDoc> docs = null;
-    if (sRequest.isSolrSearchNeeded()) {
-      // search solr and then mongo for this request
-      
-      docs = searchSolr(sRequest, storeIdsToSearch);
-      if(docs == null || docs.getTotalElements() == 0) {
-        return SearchResponse.empty();
-      }
-    }
+//    if (sRequest.isSolrSearchNeeded()) {
+//      // search solr and then mongo for this request
+//      System.out.println("solar search");
+//      docs = searchSolr(sRequest, storeIdsToSearch);
+//      if(docs == null || docs.getTotalElements() == 0) {
+//        return SearchResponse.empty();
+//      }
+//    }
     // dont search solr, directly search in mongo
     return searchDBForDocs(sRequest, storeIdsToSearch, docs, v2);
   }
@@ -263,9 +265,10 @@ public class StoreInventoryService {
     return sItem.isPresent() ? sItem.get().toCartItem() : null;
   }
   
-  public WishItem findByid(String id) {
+  public Optional<StoreItemEntity> findByid(String id) {
 	    Optional<StoreItemEntity> sItem = repo.findById(id);
-	    return sItem.isPresent() ? sItem.get().toWishItem() : null;
+	    return sItem;
+	   // return sItem.isPresent() ? sItem.get().toWishItem() : null;
 	  }
 
   
@@ -288,9 +291,11 @@ public class StoreInventoryService {
 
    public List<String> getStores(String itemid){
     List<StoreItemEntity> result = repo.findByItemId(itemid);
+    
     List<String> onlyStoreid = new ArrayList<>();
     if(result!=null){
       result.forEach(item ->{
+    	 
         onlyStoreid.add(item.getStoreId());
       });
       return onlyStoreid;

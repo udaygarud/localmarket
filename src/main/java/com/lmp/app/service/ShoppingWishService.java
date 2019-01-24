@@ -1,5 +1,7 @@
 package com.lmp.app.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 
@@ -14,17 +16,23 @@ import com.lmp.app.exceptions.CartNotFoundException;
 import com.lmp.app.exceptions.ItemNotFoundException;
 import com.lmp.app.exceptions.MuliplteStoreInCartException;
 import com.lmp.app.model.ShoppingWishListRequest;
+import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.ShoppingWishListEntity;
+import com.lmp.db.pojo.StoreItemEntity;
 import com.lmp.db.repository.ShoppingWishListRepository;
+import com.lmp.db.repository.StoreInventoryRepository;
 
 @Service
 public class ShoppingWishService {
 	 private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	  @Autowired
+	  StoreInventoryRepository sirepo;
 	  @Autowired
 	  private ShoppingWishListRepository repo;
 	  @Autowired
 	  private StoreInventoryService storeItemService;
+	  @Autowired
+	  ItemService itemService;
 
 	  public ShoppingWishList getCart(ShoppingWishListRequest cartRequest) {
 	    if(cartRequest == null || cartRequest.getUserId() == null) {
@@ -76,27 +84,50 @@ public class ShoppingWishService {
 	      //create new cart for user
 	      cart = ShoppingWishList.forUser(cartRequest.getUserId());
 	    }
-
-	    WishItem item = cart.get(cartRequest.getItemId());
-	    if(item == null) {
-	      item = storeItemService.findByid(cartRequest.getItemId());
-	      if(item == null) {
-	        logger.info("no store item id: {}", cartRequest.getItemId());
-	        throw new ItemNotFoundException();
-	      }
-	    }
-	    // requested item from different store
-	    if(cart.getStoreId() != null && !cart.getStoreId().equals(item.getStoreId())) {
-	      // if force flag is true then clear the current cart and add incoming item
-//	      if(cartRequest.isClearFirst()) {
-//	        clear(cart);
-//	      } else {
-//	        throw new MuliplteStoreInCartException();
-//	      }
-	    }
-	    cart.setStoreId(item.getStoreId());
-	    cart.addToWish(item, cartRequest.getQuantity());
-	    repo.save(ShoppingWishListEntity.toEntity(cart));
+	    
+	  //  WishItem item = cart.get(cartRequest.getItemId());
+	    Optional<StoreItemEntity> storeItem = storeItemService.findByid(cartRequest.getItemId());
+	   // if(item == null) {
+	    	if(storeItem == null) {
+	    		logger.info("no store item id: {}", cartRequest.getItemId());
+	    		throw new ItemNotFoundException();
+	    	} else {
+	    		System.out.println("cart item "+cart.getItems().size());
+	    		if(cart.getItems().size()>0){
+	    			List<String> list = new ArrayList<>();
+	    			for (WishItem ie : cart.getItems()) {
+						list.add(ie.getItem().getId());
+					}
+	    			if(list.contains(storeItem.get().getItem().getId())){
+	    				
+	    			} else {
+	    				List<WishItem> allItems = cart.getItems();
+	    				WishItem item = new WishItem();
+	    				item.setId(cartRequest.getItemId());
+	    				item.setItem(storeItem.get().getItem());
+	    				item.setSaveForLater(false);
+	    				cart.addToWish(item, cartRequest.getQuantity());
+	    				repo.save(ShoppingWishListEntity.toEntity(cart));
+	    			}
+	    		}else {
+	    			WishItem item = new WishItem();
+	    			item.setId(cartRequest.getItemId());
+    				item.setItem(storeItem.get().getItem());
+    				item.setSaveForLater(false);
+    				cart.addToWish(item, cartRequest.getQuantity());
+    				repo.save(ShoppingWishListEntity.toEntity(cart));
+	    		}
+	    		
+	    		
+	    	}
+//	    }else {
+//	    	if(storeItem == null) {
+//	    		logger.info("no store item id: {}", cartRequest.getItemId());
+//	    		throw new ItemNotFoundException();
+//	    	} else {
+//	    		System.out.println("already exists "+cart.getItem().contains(storeItem));
+//	    	}
+//	    }
 	    return getCart(cartRequest);
 	  }
 
@@ -126,7 +157,7 @@ public class ShoppingWishService {
 	      return ShoppingWishList.forUser(cartRequest.getUserId());
 	    }
 	    for(WishItem ci : cart.getItems()) {
-	      if(ci.getId().equals(cartRequest.getItemId())) {
+	      if(ci.getItem().getId().equals(cartRequest.getItemId())) {
 	        ci.setSaveForLater(true);
 	      }
 	    }
