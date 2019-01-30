@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.StoreItemEntity;
 
 public class Item {
@@ -22,7 +23,7 @@ public class Item {
   private String dpci;
   private double listPrice;
   private double offerPrice;
-  private boolean onSale;
+private boolean onSale;
   private boolean inStock;
   private long release_date;
   private List<String> bullet_description;
@@ -43,6 +44,16 @@ public class Item {
     item.offerPrice = Math.round(itemEnyity.getSalePrice() * 100.0) / 100.0;
     return item;
   }
+  public static Item fromItemEntity(ItemEntity itemEnyity) {
+	    Item item = new Item();
+	    BeanUtils.copyProperties(itemEnyity, item);
+	    item.id = itemEnyity.getId();
+	    //item.onSale = itemEnyity.isOnSale();
+	    //item.inStock = itemEnyity.getStock() > 0;
+	    item.listPrice = Math.round(itemEnyity.getList_price() * 100.0) / 100.0;
+	    item.offerPrice = Math.round(itemEnyity.getOffer_price() * 100.0) / 100.0;
+	    return item;
+	  }
   public int getStock() {
     return stock;
   }

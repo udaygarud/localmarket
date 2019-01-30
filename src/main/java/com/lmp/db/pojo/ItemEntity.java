@@ -25,7 +25,7 @@ public class ItemEntity {
   private long upc;
   private long tcin;
   private String dpci;
-  private float list_price;
+private float list_price;
   private float offer_price;
   private long release_date;
   private List<String> bullet_description;

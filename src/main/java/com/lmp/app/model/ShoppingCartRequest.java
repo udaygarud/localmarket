@@ -5,6 +5,7 @@ public class ShoppingCartRequest {
   private String userId;
   private String itemId;
   private int quantity;
+  private String storeId;
   private boolean clearFirst;
 
   public ShoppingCartRequest() {
@@ -20,8 +21,15 @@ public class ShoppingCartRequest {
   public void setUserId(String userId) {
     this.userId = userId;
   }
+  public String getStoreId() {
+	return storeId;
+}
 
-  public String getItemId() {
+public void setStoreId(String storeId) {
+	this.storeId = storeId;
+}
+
+public String getItemId() {
     return itemId;
   }
 

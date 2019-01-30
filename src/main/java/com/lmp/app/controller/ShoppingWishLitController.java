@@ -69,8 +69,8 @@ public class ShoppingWishLitController extends BaseController{
 	    List<WishItem> list = wishList.getItems();
 	    List<StoreInventoryV2> responseList = new ArrayList<>();
 	    for (WishItem ie : list) {
-	    	Item item = new Item();
-	    	 BeanUtils.copyProperties(ie.getItem(), item);
+	    	Item item = Item.fromItemEntity(ie.getItem());
+	    	 //BeanUtils.copyProperties(ie.getItem(), item);
 	    	responseList.add(new StoreInventoryV2(item, siservice.getStoreswithInfo(ie.getItem().getId()), true));
 			
 		}
