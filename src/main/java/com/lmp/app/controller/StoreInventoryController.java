@@ -17,6 +17,7 @@ import com.lmp.app.entity.ProductInformation;
 import com.lmp.app.entity.StoreInventoryV2;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
+import com.lmp.app.model.DeleteInventory;
 import com.lmp.app.model.ResponseFilter;
 import com.lmp.app.model.SearchProductID;
 import com.lmp.app.model.SearchRequest;
@@ -109,7 +110,7 @@ public class StoreInventoryController extends BaseController {
       return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
 	  System.out.println("filters "+searchRequest.getFilters());
-    logger.info("searching for the request " + searchRequest.getStoreId());
+    logger.info("searching for the request " + searchRequest.toString());
     // emailId , uId- unique id
     // when uId is only present
     if (!Strings.isNullOrEmpty(searchRequest.getQuery())) {
@@ -402,5 +403,21 @@ public class StoreInventoryController extends BaseController {
 	    // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
 	    return new ResponseEntity<CartResponse>(
 	        BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.PRODUCT_UPDATED), HttpStatus.OK);
+  }
+  
+  @RequestMapping(value = "/delete-inventory",method =RequestMethod.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseEntity<?> deleteInventoryFromStore(@Valid @RequestBody DeleteInventory inventories, Errors errors){
+	  if (errors.hasErrors()) {
+	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+	    }
+	  
+	  	for(int i=0;i<inventories.getIds().size();i++){
+	  		System.out.println("ids "+inventories.getIds().get(i));
+	  		service.deleveInventory(inventories.getIds().get(i));
+	  	}
+	    // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
+	    return new ResponseEntity<CartResponse>(
+	        BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.PRODUCT_DELETED), HttpStatus.OK);
   }
 }

@@ -25,6 +25,9 @@ public interface StoreInventoryRepository
       Pageable page);
 
   public List<StoreItemEntity> findByItemId(String itemId);
+  public void deleteById(String id);
+ 
+  
   
   
 

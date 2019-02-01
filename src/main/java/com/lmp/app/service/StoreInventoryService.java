@@ -157,15 +157,14 @@ public class StoreInventoryService {
         storeIdsToSearch.add(id.trim());
       }
     }
-    Page<ItemDoc> docs = null;
-//    if (sRequest.isSolrSearchNeeded()) {
-//      // search solr and then mongo for this request
-//      System.out.println("solar search");
-//      docs = searchSolr(sRequest, storeIdsToSearch);
-//      if(docs == null || docs.getTotalElements() == 0) {
-//        return SearchResponse.empty();
-//      }
-//    }
+    Page<ItemDoc> docs = null;    if (sRequest.isSolrSearchNeeded()) {
+      // search solr and then mongo for this request
+      System.out.println("solar search");
+      docs = searchSolr(sRequest, storeIdsToSearch);
+      if(docs == null || docs.getTotalElements() == 0) {
+        return SearchResponse.empty();
+      }
+    }
     // dont search solr, directly search in mongo
     return searchDBForDocs(sRequest, storeIdsToSearch, docs, v2);
   }
@@ -397,6 +396,12 @@ public class StoreInventoryService {
 	  item.setOnSale(false);
 	  item.setSalePrice(item.getListPrice());
 	  repo.save(item);
+	  return true;
+  }
+  
+  @Transactional
+  public boolean deleveInventory(String id){
+	  repo.deleteById(id);
 	  return true;
   }
 
