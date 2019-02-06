@@ -107,9 +107,9 @@ public class StoreInventoryController extends BaseController {
   public ResponseEntity<?> lookupStoreInventoryV2(@Valid @RequestBody SearchRequest searchRequest, Errors errors,
       @RequestHeader(value = "emailId",required = false) String emailId, @RequestHeader(value = "uId",required = false) String uId) {
 	  if (errors.hasErrors()) {
-      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
+		  return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
     }
-	  System.out.println("filters "+searchRequest.getFilters());
+	 
     logger.info("searching for the request " + searchRequest.toString());
     // emailId , uId- unique id
     // when uId is only present

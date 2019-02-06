@@ -264,10 +264,17 @@ public class StoreInventoryService {
 	}
 
   
-  public CartItem findById(String id) {
+  public Optional<StoreItemEntity> findStoreItemById(String id) {
     Optional<StoreItemEntity> sItem = repo.findById(id);
-    return sItem.isPresent() ? sItem.get().toCartItem() : null;
+     return sItem.isPresent() ? sItem : null;
+    //return sItem.isPresent() ? sItem.get().toCartItem() : null;
   }
+  
+  public CartItem findById(String id) {
+	    Optional<StoreItemEntity> sItem = repo.findById(id);
+	     
+	    return sItem.isPresent() ? sItem.get().toCartItem() : null;
+	  }
   
   public Optional<StoreItemEntity> findByid(String id) {
 	    Optional<StoreItemEntity> sItem = repo.findById(id);

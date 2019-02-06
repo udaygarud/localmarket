@@ -61,6 +61,7 @@ public class SolrSearchService {
       PriceRange pr = PriceRange.from(sRequest.priceFilter());
       conditions = conditions.connect().and(QueryUtils.between(ItemField.MIN_PRICE, pr.getMin(), pr.getMax()).and(QueryUtils.between(ItemField.MAX_PRICE, pr.getMin(), pr.getMax())));
     }
+    System.out.println("condition--- "+conditions);
     return conditions;
   }
 
@@ -81,7 +82,7 @@ public class SolrSearchService {
       sRequest.getFields().add(ItemField.ID.getValue());
       query.addProjectionOnFields(sRequest.getFields().toArray(new String[] {}));
     }
-    logger.info("searching for solr query {}", conditions.toString());
+    logger.info("searching for solr query {}", query.getFilterQueries());
     return solrRepo.search(query);
   }
 

@@ -67,15 +67,17 @@ public class SearchRequestValidator implements Validator {
           } else if (filter.getKey().equals(FilterField.UPC.getValue())) {
           } else if (filter.getKey().equals(FilterField.PRICE_RANGE.getValue())) {
             if(filter.getValue() != null && filter.getValue().size() > 0) {
-            	String[] tokens = filter.getValue().get(0).split("to");
-            	if(tokens.length==2  && !Strings.isNullOrEmpty(tokens[0]) && !Strings.isNullOrEmpty(tokens[1])){
-            	if(PriceRange.from(filter.getValue().get(0)) == null){
-                    e.reject("field.invalid", "invalid value \""+ filter.getValue().get(0) +"\" for filter " + filter.getKey());
-                  }        
-            }
-            	else{
-            		e.reject("field.invalid", "invalid filter: " + filter.getKey());
-            	}
+            	if(filter.getValue().get(0).contains("To")){
+            		String[] tokens = filter.getValue().get(0).split("To");
+                	if(tokens.length==2  && !Strings.isNullOrEmpty(tokens[0]) && !Strings.isNullOrEmpty(tokens[1])){
+                		if(PriceRange.from(filter.getValue().get(0)) == null){
+                			e.reject("field.invalid", "invalid value \""+ filter.getValue().get(0) +"\" for filter " + filter.getKey());
+                		}        
+                	}
+                	else{
+                		e.reject("field.invalid", "invalid filter: " + filter.getKey());
+                	}
+            	} 
             }
           } else {
             e.reject("field.invalid", "invalid filter: " + filter.getKey());

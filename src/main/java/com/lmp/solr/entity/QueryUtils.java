@@ -36,6 +36,7 @@ public class QueryUtils {
         condition = condition.or(new Criteria(field.getValue()).contains(term));
       }
     }
+    System.out.println("-------------");
     return condition;
   }
 

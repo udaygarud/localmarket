@@ -1,5 +1,7 @@
 package com.lmp.solr.entity;
 
+import java.util.Set;
+
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
@@ -17,7 +19,7 @@ public class ItemDoc {
   @Field("brand")
   private String brand;
   @Field("categories")
-  private String categories;
+  private String [] categories;
   @Field("content")
   private String content;
   @Field("upc")
@@ -41,7 +43,8 @@ public class ItemDoc {
     itemDoc.brand = Strings.nullToEmpty(item.getBrand());
     itemDoc.setStores(storeids);
     if(item.getCategories() != null) {
-      itemDoc.categories = joiner.join(item.getCategories());
+      //itemDoc.categories = joiner.join(item.getCategories());
+    	itemDoc.categories = convert(item.getCategories());
     }
     itemDoc.content = itemDoc.brand + " " + itemDoc.categories 
         + " " + item.getTitle();
@@ -63,10 +66,10 @@ public class ItemDoc {
   public void setBrand(String brand) {
     this.brand = brand;
   }
-  public String getCategories() {
+  public String[] getCategories() {
     return categories;
   }
-  public void setCategories(String categories) {
+  public void setCategories(String[] categories) {
     this.categories = categories;
   }
   public String getContent() {
@@ -108,4 +111,19 @@ public class ItemDoc {
   public void setStores(String stores) {
     this.stores = stores;
   }
+  public static String[] convert(Set<String> setOfString) 
+  { 
+
+      // Create String[] of size of setOfString 
+      String[] arrayOfString = new String[setOfString.size()]; 
+
+      // Copy elements from set to string array 
+      // using advanced for loop 
+      int index = 0; 
+      for (String str : setOfString) 
+          arrayOfString[index++] = str; 
+
+      // return the formed String[] 
+      return arrayOfString; 
+  } 
 }

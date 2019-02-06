@@ -16,6 +16,7 @@ import com.lmp.app.exceptions.ItemNotFoundException;
 import com.lmp.app.exceptions.MuliplteStoreInCartException;
 import com.lmp.app.model.ShoppingCartRequest;
 import com.lmp.db.pojo.ShoppingCartEntity;
+import com.lmp.db.pojo.StoreItemEntity;
 import com.lmp.db.repository.ShoppingCartRepository;
 
 @Service
@@ -77,10 +78,11 @@ public class ShoppingCartService {
       //create new cart for user
       cart = ShoppingCart.forUser(cartRequest.getUserId());
     }
-
+    Optional<StoreItemEntity> storeItem = storeItemService.findStoreItemById(cartRequest.getItemId());
     CartItem item = cart.get(cartRequest.getItemId());
     if(item == null) {
       item = storeItemService.findById(cartRequest.getItemId());
+    	
       if(item == null) {
         logger.info("no store item id: {}", cartRequest.getItemId());
         throw new ItemNotFoundException();
@@ -95,8 +97,8 @@ public class ShoppingCartService {
         throw new MuliplteStoreInCartException();
       }
     }
-    cart.setStoreId(item.getStoreId());
-    cart.addToCart(item, cartRequest.getQuantity());
+    cart.setStoreId(storeItem.get().getStoreId());
+    cart.addToCart(item, cartRequest.getQuantity(),storeItem.get().getItem());
     repo.save(ShoppingCartEntity.toEntity(cart));
     return getCart(cartRequest);
   }

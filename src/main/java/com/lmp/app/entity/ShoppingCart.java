@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.util.Assert;
 
+import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.ShoppingCartEntity;
 
 public class ShoppingCart {
@@ -34,16 +36,18 @@ public class ShoppingCart {
   public static class CartItem {
 
     private String id;
+    @DBRef
+    private ItemEntity item = new ItemEntity();
     private String storeId;
     private int stock;
-    private String title;
-    private String url;
-    private String brand;
-    private double listPrice;
-    private double offerPrice;
-    private boolean onSale;
+//    private String title;
+//    private String url;
+//    private String brand;
+//    private double listPrice;
+//    private double offerPrice;
+//    private boolean onSale;
     private boolean inStock;
-    private List<Image> images;
+  //  private List<Image> images;
     private int quantity;
     private boolean saveForLater;
 
@@ -70,54 +74,54 @@ public class ShoppingCart {
     public void setStock(int stock) {
       this.stock = stock;
     }
-    public String getTitle() {
-      return title;
-    }
-    public void setTitle(String title) {
-      this.title = title;
-    }
-    public String getUrl() {
-      return url;
-    }
-    public void setUrl(String url) {
-      this.url = url;
-    }
-    public String getBrand() {
-      return brand;
-    }
-    public void setBrand(String brand) {
-      this.brand = brand;
-    }
-    public double getListPrice() {
-      return listPrice;
-    }
-    public void setListPrice(double listPrice) {
-      this.listPrice = listPrice;
-    }
-    public double getOfferPrice() {
-      return offerPrice;
-    }
-    public void setOfferPrice(double offerPrice) {
-      this.offerPrice = offerPrice;
-    }
-    public boolean isOnSale() {
-      return onSale;
-    }
-    public void setOnSale(boolean onSale) {
-      this.onSale = onSale;
-    }
+//    public String getTitle() {
+//      return title;
+//    }
+//    public void setTitle(String title) {
+//      this.title = title;
+//    }
+//    public String getUrl() {
+//      return url;
+//    }
+//    public void setUrl(String url) {
+//      this.url = url;
+//    }
+//    public String getBrand() {
+//      return brand;
+//    }
+//    public void setBrand(String brand) {
+//      this.brand = brand;
+//    }
+//    public double getListPrice() {
+//      return listPrice;
+//    }
+//    public void setListPrice(double listPrice) {
+//      this.listPrice = listPrice;
+//    }
+//    public double getOfferPrice() {
+//      return offerPrice;
+//    }
+//    public void setOfferPrice(double offerPrice) {
+//      this.offerPrice = offerPrice;
+//    }
+//    public boolean isOnSale() {
+//      return onSale;
+//    }
+//    public void setOnSale(boolean onSale) {
+//      this.onSale = onSale;
+//    }
     public boolean isInStock() {
       return inStock;
     }
     public void setInStock(boolean inStock) {
       this.inStock = inStock;
     }
-    public List<Image> getImages() {
-      return images;
-    }
-    public void setImages(List<Image> images) {
-      this.images = images;
-    }
+//    public List<Image> getImages() {
+//      return images;
+//    }
+//    public void setImages(List<Image> images) {
+//      this.images = images;
+//    }
     public boolean isSaveForLater() {
       return saveForLater;
     }
@@ -131,6 +135,13 @@ public class ShoppingCart {
       this.quantity = quantity;
       return this;
     }
+	public ItemEntity getItem() {
+		return item;
+	}
+	public void setItem(ItemEntity item) {
+		this.item = item;
+	}
+    
   }
 
   public CartItem get(String itemId) {
@@ -141,7 +152,7 @@ public class ShoppingCart {
     }
     return null;
   }
-  public void addToCart(CartItem item, int quantity) {
+  public void addToCart(CartItem item, int quantity,ItemEntity ie) {
     CartItem existing = get(item.getId());
     if(existing != null) {
       if(existing.saveForLater) { // move from list to cart
@@ -152,6 +163,7 @@ public class ShoppingCart {
       }
     } else {
       item.setQuantity(quantity);
+      item.setItem(ie);
       items.add(item);
     }
   }

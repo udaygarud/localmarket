@@ -26,9 +26,11 @@ public class SolrCustomRepositoryImpl implements SolrCustomRepository {
     Page<ItemDoc> itemDocs = solrTemplate.query("itemdoc", query, ItemDoc.class);
     if(itemDocs == null || itemDocs.getContent() == null) {
       logger.error("null response from solr for query: {}", query.toString());
+      System.out.println("if");
       return null;
     }
     logger.debug("solr docs found: {}, for query {}",itemDocs.getContent().size(), query.toString());
+    System.out.println("----------------- "+itemDocs.getContent().size());
     return itemDocs;
   }
 
