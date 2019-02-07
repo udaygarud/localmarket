@@ -27,7 +27,9 @@ import com.lmp.db.pojo.StoreItemEntity;
 import com.lmp.db.pojo.UserEntity;
 import com.lmp.db.repository.CustomerOrderRepository;
 import com.lmp.db.repository.ItemRepository;
+import com.lmp.db.repository.SearchHistoryRepository;
 import com.lmp.db.repository.ShoppingCartRepository;
+import com.lmp.db.repository.ShoppingWishListRepository;
 import com.lmp.db.repository.StoreInventoryRepository;
 import com.lmp.db.repository.StoreRepository;
 import com.lmp.db.repository.UserRepository;
@@ -42,6 +44,10 @@ public class AppBootUp {
   ConfigProperties prop;
   @Autowired
   private ShoppingCartRepository cartRepo;
+  @Autowired
+  private ShoppingWishListRepository wishListRepo;
+  @Autowired
+  private SearchHistoryRepository searchRepo;
   @Autowired
   private ItemRepository itemRepo;  
   @Autowired
@@ -170,6 +176,8 @@ public class AppBootUp {
       orderRepo.deleteAll();
       storeRepo.deleteAll();
       userRepo.deleteAll();
+      wishListRepo.deleteAll();
+      searchRepo.deleteAll();
       seedTestUsers();
       //seedStores();
       FileIOUtil.deleteFile(prop.getSeededFiles());

@@ -89,16 +89,18 @@ public class ShoppingCartService {
       }
     }
     // requested item from different store
+   // System.out.println("---- "+cart.getItems().get(0).g);
     if(cart.getStoreId() != null && !cart.getStoreId().equals(item.getStoreId())) {
       // if force flag is true then clear the current cart and add incoming item
       if(cartRequest.isClearFirst()) {
         clear(cart);
       } else {
+    	  System.out.println("exist");
         throw new MuliplteStoreInCartException();
       }
     }
     cart.setStoreId(storeItem.get().getStoreId());
-    cart.addToCart(item, cartRequest.getQuantity(),storeItem.get().getItem());
+    cart.addToCart(item, cartRequest.getQuantity(),storeItem.get());
     repo.save(ShoppingCartEntity.toEntity(cart));
     return getCart(cartRequest);
   }

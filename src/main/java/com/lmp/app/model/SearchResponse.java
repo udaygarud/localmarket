@@ -74,8 +74,8 @@ public class SearchResponse<T> extends BaseResponse {
 	   ArrayList<String> wishListIds = new ArrayList<>();
 	   System.out.println();
 	  for(WishItem wishItem : list){
-		  System.out.println("wish list id "+wishItem.getId());
-		  System.out.println("wish list id 2 "+wishItem.getItem().getId());
+		 // System.out.println("wish list id "+wishItem.getId());
+		  //System.out.println("wish list id 2 "+wishItem.getItem().getId());
 		  wishListIds.add(wishItem.getId());
 	  }
 	   for(StoreItemEntity ie : items) {

@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.ShoppingCartEntity;
+import com.lmp.db.pojo.StoreItemEntity;
 
 public class ShoppingCart {
 
@@ -37,17 +38,9 @@ public class ShoppingCart {
 
     private String id;
     @DBRef
-    private ItemEntity item = new ItemEntity();
-    private String storeId;
-    private int stock;
-//    private String title;
-//    private String url;
-//    private String brand;
-//    private double listPrice;
-//    private double offerPrice;
-//    private boolean onSale;
-    private boolean inStock;
+    private StoreItemEntity storeItem = new StoreItemEntity();
   //  private List<Image> images;
+    private String storeId;
     private int quantity;
     private boolean saveForLater;
 
@@ -68,60 +61,13 @@ public class ShoppingCart {
     public void setStoreId(String storeId) {
       this.storeId = storeId;
     }
-    public int getStock() {
-      return stock;
-    }
-    public void setStock(int stock) {
-      this.stock = stock;
-    }
-//    public String getTitle() {
-//      return title;
+//    public int getStock() {
+//      return stock;
 //    }
-//    public void setTitle(String title) {
-//      this.title = title;
+//    public void setStock(int stock) {
+//      this.stock = stock;
 //    }
-//    public String getUrl() {
-//      return url;
-//    }
-//    public void setUrl(String url) {
-//      this.url = url;
-//    }
-//    public String getBrand() {
-//      return brand;
-//    }
-//    public void setBrand(String brand) {
-//      this.brand = brand;
-//    }
-//    public double getListPrice() {
-//      return listPrice;
-//    }
-//    public void setListPrice(double listPrice) {
-//      this.listPrice = listPrice;
-//    }
-//    public double getOfferPrice() {
-//      return offerPrice;
-//    }
-//    public void setOfferPrice(double offerPrice) {
-//      this.offerPrice = offerPrice;
-//    }
-//    public boolean isOnSale() {
-//      return onSale;
-//    }
-//    public void setOnSale(boolean onSale) {
-//      this.onSale = onSale;
-//    }
-    public boolean isInStock() {
-      return inStock;
-    }
-    public void setInStock(boolean inStock) {
-      this.inStock = inStock;
-    }
-//    public List<Image> getImages() {
-//      return images;
-//    }
-//    public void setImages(List<Image> images) {
-//      this.images = images;
-//    }
+
     public boolean isSaveForLater() {
       return saveForLater;
     }
@@ -135,11 +81,11 @@ public class ShoppingCart {
       this.quantity = quantity;
       return this;
     }
-	public ItemEntity getItem() {
-		return item;
+	public StoreItemEntity getItem() {
+		return storeItem;
 	}
-	public void setItem(ItemEntity item) {
-		this.item = item;
+	public void setItem(StoreItemEntity item) {
+		this.storeItem = item;
 	}
     
   }
@@ -152,7 +98,7 @@ public class ShoppingCart {
     }
     return null;
   }
-  public void addToCart(CartItem item, int quantity,ItemEntity ie) {
+  public void addToCart(CartItem item, int quantity,StoreItemEntity ie) {
     CartItem existing = get(item.getId());
     if(existing != null) {
       if(existing.saveForLater) { // move from list to cart
