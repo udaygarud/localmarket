@@ -21,7 +21,7 @@ public class Item {
   private long upc;
   private long tcin;
   private String dpci;
-  private double listPrice;
+  private double list_price;
   private double offerPrice;
 private boolean onSale;
   private boolean inStock;
@@ -40,7 +40,7 @@ private boolean onSale;
     item.id = itemEnyity.getId();
     item.onSale = itemEnyity.isOnSale();
     item.inStock = itemEnyity.getStock() > 0;
-    item.listPrice = Math.round(itemEnyity.getListPrice() * 100.0) / 100.0;
+    item.list_price = Math.round(itemEnyity.getList_price() * 100.0) / 100.0;
     item.offerPrice = Math.round(itemEnyity.getSalePrice() * 100.0) / 100.0;
     return item;
   }
@@ -49,8 +49,8 @@ private boolean onSale;
 	    BeanUtils.copyProperties(itemEnyity, item);
 	    item.id = itemEnyity.getId();
 	    //item.onSale = itemEnyity.isOnSale();
-	    //item.inStock = itemEnyity.getStock() > 0;
-	    item.listPrice = Math.round(itemEnyity.getList_price() * 100.0) / 100.0;
+	   // item.inStock = itemEnyity.getStock() > 0;
+	    item.list_price = Math.round(itemEnyity.getList_price() * 100.0) / 100.0;
 	    item.offerPrice = Math.round(itemEnyity.getOffer_price() * 100.0) / 100.0;
 	    return item;
 	  }
@@ -150,13 +150,14 @@ private boolean onSale;
   public void setCategories(Set<String> categories) {
     this.categories = categories;
   }
-  public double getListPrice() {
-    return listPrice;
-  }
-  public void setListPrice(double listPrice) {
-    this.listPrice = listPrice;
-  }
-  public double getOfferPrice() {
+ 
+  public double getList_price() {
+	return list_price;
+}
+public void setList_price(double list_price) {
+	this.list_price = list_price;
+}
+public double getOfferPrice() {
     return offerPrice;
   }
   public void setOfferPrice(double offerPrice) {

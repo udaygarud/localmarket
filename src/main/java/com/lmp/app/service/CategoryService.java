@@ -46,7 +46,8 @@ public class CategoryService {
       while(it.hasNext()) {
         ItemEntity item = it.next();
         for(String cat : item.getCategories()) {
-          cat = cat.toLowerCase().trim();
+         // cat = cat.toLowerCase().trim();
+        	cat = cat.trim();
           // count the occurance of the category name
           if(countMap.containsKey(cat)) {
             countMap.put(cat, countMap.get(cat).incrPriority());
@@ -65,7 +66,7 @@ public class CategoryService {
       // get the max occurance node from the set and set that as root and set second max as its child
       List<CategoryNode> list = new ArrayList<>();
       catSet.forEach(cat -> {
-        list.add(countMap.get(cat.trim().toLowerCase()));
+        list.add(countMap.get(cat.trim()));
       });
       cTree.addPath(list);
     }

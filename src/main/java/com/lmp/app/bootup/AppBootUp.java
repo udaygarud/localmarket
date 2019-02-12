@@ -116,14 +116,14 @@ public class AppBootUp {
         sItem.setStock(100);
         sItem.setAdded(time);
         sItem.setUpdated(time);
-        sItem.setListPrice(item.getList_price() * (0.6f + random.nextFloat())); // min 0.6 factor for price
+        sItem.setList_price(item.getList_price() * (0.6f + random.nextFloat())); // min 0.6 factor for price
         storeIdsToIndex.add(store.getId());
         if(random.nextInt(100) < 20) {
           // put 20% inventory on sale 
           sItem.setOnSale(true);
-          sItem.setSalePrice(sItem.getListPrice() * (1 - ((10.0f +random.nextInt(30)))/100)); // min 10 percent discount
+          sItem.setSalePrice(sItem.getList_price() * (1 - ((10.0f +random.nextInt(30)))/100)); // min 10 percent discount
         } else {
-          sItem.setSalePrice(sItem.getListPrice());
+          sItem.setSalePrice(sItem.getList_price());
         }
         min = Math.min(min, sItem.getSalePrice());
         max = Math.max(max, sItem.getSalePrice());
@@ -191,6 +191,7 @@ public class AppBootUp {
       }
       seedOneCategory(file, stores);
     }
-    autoCService.buildAutoCompleteCollection();
+   // autoCService.buildAutoCompleteCollection();
+    indexer.deleteAllKeyWords();
   }
 }

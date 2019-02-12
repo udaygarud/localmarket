@@ -27,6 +27,7 @@ import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ShoppingWishList;
 import com.lmp.app.entity.ShoppingWishList.WishItem;
 import com.lmp.app.entity.StoreInventoryV2;
+import com.lmp.app.entity.WishListResponse;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.CheckoutRequest;
@@ -67,15 +68,15 @@ public class ShoppingWishLitController extends BaseController{
 	    logger.info("getting cart with id {} " + id);
 	    ShoppingWishList wishList = service.getCart(id);
 	    List<WishItem> list = wishList.getItems();
-	    List<StoreInventoryV2> responseList = new ArrayList<>();
+	    List<WishListResponse> responseList = new ArrayList<>();
 	    for (WishItem ie : list) {
-	    	Item item = Item.fromItemEntity(ie.getItem());
+	    	//Item item = Item.fromItemEntity(ie.getItem());
 	    	 //BeanUtils.copyProperties(ie.getItem(), item);
-	    	responseList.add(new StoreInventoryV2(item, siservice.getStoreswithInfo(ie.getItem().getId()), true));
+	    	responseList.add(new WishListResponse(ie, siservice.getStoreswithInfo(ie.getItem().getId()), true));
 			
 		}
 	  //  BaseResponse response = (BaseResponse) responseList;
-	    return new ResponseEntity<List<StoreInventoryV2>>(responseList, HttpStatus.OK);
+	    return new ResponseEntity<List<WishListResponse>>(responseList, HttpStatus.OK);
 	  //  return new ResponseEntity<BaseResponse>(response, HttpStatus.OK);
 	  }
 

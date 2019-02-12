@@ -4,6 +4,8 @@ public class StoreInformation {
 	private String storeId;
     private boolean onSale;
     private double offerPrice;
+    private int stock;
+    private boolean inStock;
 	public String getStoreId() {
 		return storeId;
 	}
@@ -22,6 +24,17 @@ public class StoreInformation {
 	public void setOfferPrice(double offerPrice) {
 		this.offerPrice = offerPrice;
 	}
+	 public int getStock() {
+		    return stock;
+		  }
+		  public void setStock(int stock) {
+		    this.stock = stock;
+		  }
     
-    
+		  public boolean isInStock() {
+			    return inStock;
+			  }
+			  public void setInStock(boolean inStock) {
+			    this.inStock = inStock;
+			  }
 }

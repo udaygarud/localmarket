@@ -25,6 +25,7 @@ import com.lmp.app.model.SearchResponse;
 import com.lmp.app.model.UploadmultiInventory;
 import com.lmp.app.model.UploadInventory;
 import com.lmp.app.model.validator.SearchRequestValidator;
+import com.lmp.app.service.AutoCompleteService;
 import com.lmp.app.service.ItemService;
 import com.lmp.app.service.ResultsFilterService;
 import com.lmp.app.service.StoreInventoryService;
@@ -71,6 +72,8 @@ public class StoreInventoryController extends BaseController {
   @Autowired
   private SolrIndexer indexer;
   private SearchRequestValidator searchRequestValidator;
+  @Autowired
+  private AutoCompleteService autoCService;
 
   @Autowired
   public StoreInventoryController(SearchRequestValidator searchRequestValidator) {
@@ -201,7 +204,7 @@ public class StoreInventoryController extends BaseController {
     }
     logger.debug("no stores found nearby lat {} & lng {}", uploadRequest.toString());
     ItemEntity response = itemservice.findByUpc(uploadRequest.getUpc());
-
+    System.out.println("stokkkkkkkkk "+uploadRequest.getStock());
     StoreItemEntity item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
     if (item == null) {
       StoreItemEntity sItem = new StoreItemEntity();
@@ -211,12 +214,13 @@ public class StoreInventoryController extends BaseController {
       sItem.setStock(0);
       sItem.setAdded(time);
       sItem.setUpdated(time);
-      sItem.setListPrice((float) uploadRequest.getListPrice()); // min 0.6 factor for price
-      sItem.setSalePrice(sItem.getListPrice());
+      sItem.setList_price((float) uploadRequest.getListPrice()); // min 0.6 factor for price
+      sItem.setSalePrice(sItem.getList_price());
       siRepo.save(sItem);
       try {
         indexer.addToIndex(response, (String) uploadRequest.getStoreId(), (float) uploadRequest.getListPrice(),
             (float) uploadRequest.getListPrice());
+        autoCService.addsuggestKeywords(response);
       } catch (SolrServerException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -227,7 +231,8 @@ public class StoreInventoryController extends BaseController {
     }
     item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
 
-    System.out.println(item.getStock());
+    System.out.println("stokkkkkkkkk "+item.getStock());
+    System.out.println("stokkkkkkkkk upload "+uploadRequest.getStock());
     service.updateStockCountafterInventoryUpdate(item, uploadRequest.getStock());
     System.out.println(item.getStock());
     // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
@@ -243,7 +248,7 @@ public class StoreInventoryController extends BaseController {
     }
     logger.debug("no stores found nearby lat {} & lng {}", uploadRequest.toString());
     ItemEntity response = itemservice.findByUpc(uploadRequest.getUpc());
-
+    
     StoreItemEntity item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
     if (item == null) {
       StoreItemEntity sItem = new StoreItemEntity();
@@ -253,8 +258,8 @@ public class StoreInventoryController extends BaseController {
       sItem.setStock(0);
       sItem.setAdded(time);
       sItem.setUpdated(time);
-      sItem.setListPrice((float) uploadRequest.getListPrice()); // min 0.6 factor for price
-      sItem.setSalePrice(sItem.getListPrice());
+      sItem.setList_price((float) uploadRequest.getListPrice()); // min 0.6 factor for price
+      sItem.setSalePrice(sItem.getList_price());
       siRepo.save(sItem);
       try {
         indexer.addToIndex(response, (String) uploadRequest.getStoreId(), (float) uploadRequest.getListPrice(),
@@ -270,7 +275,7 @@ public class StoreInventoryController extends BaseController {
     item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
 
     System.out.println(item.getStock());
-    item.setListPrice((float) uploadRequest.getListPrice());
+    item.setList_price((float) uploadRequest.getListPrice());
     service.resetStockCountafterInventoryUpdate(item, uploadRequest.getStock());
     System.out.println(item.getStock());
     // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
@@ -289,7 +294,6 @@ public class StoreInventoryController extends BaseController {
     List<UploadInventory> uploads = uploadRequestMulti.getInventoryList();
     for (UploadInventory uploadRequest : uploads) {
       ItemEntity response = itemservice.findByUpc(uploadRequest.getUpc());
-
       StoreItemEntity item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
       if (item == null) {
         StoreItemEntity sItem = new StoreItemEntity();
@@ -299,14 +303,16 @@ public class StoreInventoryController extends BaseController {
         sItem.setStock(0);
         sItem.setAdded(time);
         sItem.setUpdated(time);
-        sItem.setListPrice((float) uploadRequest.getListPrice()); // min 0.6 factor for price
-        sItem.setSalePrice(sItem.getListPrice());
+        sItem.setList_price((float) uploadRequest.getListPrice()); // min 0.6 factor for price
+        sItem.setSalePrice(sItem.getList_price());
         siRepo.save(sItem);
       }
       item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
-      System.out.println(item.getStock());
+      System.out.println("stokkkkkkkkk "+item.getStock());
+      System.out.println("stokkkkkkkkk upload "+uploadRequest.getStock());
       service.updateStockCountafterInventoryUpdate(item, uploadRequest.getStock());
-      System.out.println(item.getStock());
+      
+      autoCService.addsuggestKeywords(response);
     }
 
     // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
@@ -345,8 +351,8 @@ public class StoreInventoryController extends BaseController {
 	      sItem.setStock(0);
 	      sItem.setAdded(time);
 	      sItem.setUpdated(time);
-	      sItem.setListPrice((float) updateRequest.getListPrice()); // min 0.6 factor for price
-	      sItem.setSalePrice(sItem.getListPrice());
+	      sItem.setList_price((float) updateRequest.getListPrice()); // min 0.6 factor for price
+	      sItem.setSalePrice(sItem.getList_price());
 	      siRepo.save(sItem);
 	      try {
 	        indexer.addToIndex(response, (String) updateRequest.getStoreId(), (float) updateRequest.getListPrice(),
@@ -384,8 +390,8 @@ public class StoreInventoryController extends BaseController {
 	      sItem.setStock(0);
 	      sItem.setAdded(time);
 	      sItem.setUpdated(time);
-	      sItem.setListPrice((float) updateRequest.getListPrice()); // min 0.6 factor for price
-	      sItem.setSalePrice(sItem.getListPrice());
+	      sItem.setList_price((float) updateRequest.getListPrice()); // min 0.6 factor for price
+	      sItem.setSalePrice(sItem.getList_price());
 	      siRepo.save(sItem);
 	      try {
 	        indexer.addToIndex(response, (String) updateRequest.getStoreId(), (float) updateRequest.getListPrice(),

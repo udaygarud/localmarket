@@ -136,8 +136,13 @@ public class ShoppingWishService {
 	    if(cart == null) {
 	      return ShoppingWishList.forUser(cartRequest.getUserId());
 	    }
-	    cart.remove(cartRequest.getItemId());
+	    System.out.println("delete "+cartRequest.getItemId());
+	    System.out.println("before "+cart.getItems().size());
+	    cart.getItems().removeIf(p -> p.getId().equals(cartRequest.getItemId()));
+	    System.out.println("after "+cart.getItems().size());
+	    //cart.remove(cartRequest.getItemId());
 	    repo.save(ShoppingWishListEntity.toEntity(cart));
+	    
 	    return getCart(cartRequest);
 	  }
 

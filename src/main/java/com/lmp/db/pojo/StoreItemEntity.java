@@ -26,10 +26,12 @@ public class StoreItemEntity implements Comparable<StoreItemEntity>{
   private String storeId;
   @DBRef
   private ItemEntity item = new ItemEntity();
-  private float listPrice;
+ // private float listPrice;
+  private float salePrice;
+  private float list_price;
+ // private float offer_price;
   @Indexed
   private boolean onSale;
-  private float salePrice;
   private int popularity = 1;
   private int stock;
   private long added;
@@ -92,32 +94,40 @@ public class StoreItemEntity implements Comparable<StoreItemEntity>{
   public void setUpdated(long updated) {
     this.updated = updated;
   }
-  public float getListPrice() {
-    return listPrice;
-  }
-  public void setListPrice(float listPrice) {
-    this.listPrice = listPrice;
-  }
+  
   public boolean isOnSale() {
     return onSale;
   }
   public void setOnSale(boolean onSale) {
     this.onSale = onSale;
   }
-  public float getSalePrice() {
-    return salePrice;
-  }
-  public void setSalePrice(float salePrice) {
-    this.salePrice = salePrice;
-  }
+ 
   public int getPopularity() {
     return popularity;
   }
   public void setPopularity(int popularity) {
     this.popularity = popularity;
   }
+  
+  
 
-  @Override
+  public float getSalePrice() {
+	return salePrice;
+}
+
+public void setSalePrice(float salePrice) {
+	this.salePrice = salePrice;
+}
+
+public float getList_price() {
+	return list_price;
+}
+
+public void setList_price(float list_price) {
+	this.list_price = list_price;
+}
+
+@Override
   public int compareTo(StoreItemEntity o) {
     int res = this.storeId.compareTo(o.storeId) ;
     if(res == 0) {

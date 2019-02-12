@@ -326,6 +326,12 @@ public class StoreInventoryService {
 	    	  store.setStoreId(item.getStoreId());
 	    	  store.setOnSale(item.isOnSale());
 	    	  store.setOfferPrice(item.getSalePrice());
+	    	  store.setStock(item.getStock());
+	    	  if(item.getStock()>0){
+	    		  store.setInStock(true);
+	    	  }else {
+	    		  store.setInStock(false);
+	    	  }
 	    	  storeInfo.add(store);
 	      });
 	      return storeInfo;
@@ -379,7 +385,7 @@ public class StoreInventoryService {
   @Transactional
   public boolean updateStockCountafterInventoryUpdate(StoreItemEntity item, int stock) {
     item.setStock( item.getStock() + stock);
-    
+    System.out.println("---------- "+item.getStock());
     repo.save(item);
     return true;
   }
@@ -401,7 +407,7 @@ public class StoreInventoryService {
   @Transactional
   public boolean removeFromOnsale(StoreItemEntity item,float salePrice){
 	  item.setOnSale(false);
-	  item.setSalePrice(item.getListPrice());
+	  item.setSalePrice(item.getList_price());
 	  repo.save(item);
 	  return true;
   }

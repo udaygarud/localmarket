@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
 import com.lmp.db.pojo.ItemEntity;
+import com.lmp.db.pojo.StoreItemEntity;
 import com.lmp.solr.SolrSearchService;
 import com.lmp.solr.entity.KeywordDoc;
 import com.lmp.solr.indexer.SolrIndexer;
@@ -73,5 +74,19 @@ public class AutoCompleteService {
       indexer.addKeyWord(token);
     }
     logger.info("finished indexing {} keywords", tokens.size());
+  }
+  public void addsuggestKeywords(ItemEntity sItem){
+	  Set<KeywordDoc> tokens = new HashSet<>();
+	  for(String cat : sItem.getCategories()) {
+          // highest priority in auto complete
+          tokens.add(new KeywordDoc(cat, 0));
+        }
+        // second highest priority in auto complete
+        tokens.add(new KeywordDoc(sItem.getBrand(), 1));
+        // lowest priority in auto complete, priority 5
+       // tokens.add(new KeywordDoc(sItem.getTitle()));
+        for (KeywordDoc token : tokens) {
+            indexer.addKeyWord(token);
+          }
   }
 }
