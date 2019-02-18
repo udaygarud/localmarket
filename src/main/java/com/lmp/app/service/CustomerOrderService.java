@@ -13,6 +13,7 @@ import com.google.common.base.Strings;
 import com.lmp.app.entity.CustomerOrder;
 import com.lmp.app.entity.OrderStatus;
 import com.lmp.app.entity.ShoppingCart;
+import com.lmp.app.entity.ShoppingCart.CartItem;
 import com.lmp.app.exceptions.EmptyCartException;
 import com.lmp.app.exceptions.InvalidOrderStatusException;
 import com.lmp.app.exceptions.OrderNotFoundException;
@@ -79,6 +80,11 @@ public class CustomerOrderService {
       orders = orderRepo.findAllByCustomerId(request.getUserId(), request.pageRequesst());
     } else {
       orders = orderRepo.findAllByCustomerIdAndStatus(request.getUserId(), request.getOrderStatus(), request.pageRequesst());
+    }
+    for(CustomerOrderEntity order : orders.getContent()){
+    	for(CartItem item : order.getItems()){
+    		item.getItem().getItem().setInStock(item.getItem().getStock()>0);
+    	}
     }
     return SearchResponse.buildOrderResponse(orders);
   }

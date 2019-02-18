@@ -26,6 +26,7 @@ import com.lmp.app.entity.CustomerOrder;
 import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ShoppingWishList;
 import com.lmp.app.entity.ShoppingWishList.WishItem;
+import com.lmp.app.entity.StoreInformation;
 import com.lmp.app.entity.StoreInventoryV2;
 import com.lmp.app.entity.WishListResponse;
 import com.lmp.app.model.BaseResponse;
@@ -72,12 +73,17 @@ public class ShoppingWishLitController extends BaseController{
 	    for (WishItem ie : list) {
 	    	//Item item = Item.fromItemEntity(ie.getItem());
 	    	 //BeanUtils.copyProperties(ie.getItem(), item);
-	    	responseList.add(new WishListResponse(ie, siservice.getStoreswithInfo(ie.getItem().getId()), true));
-			
+	    	List<StoreInformation> stores = siservice.getStoreswithInfo(ie.getItem().getId());
+	    	for(StoreInformation store : stores){
+	    		if(store.isInStock()){
+	    			ie.getItem().setInStock(true);
+	    			System.out.println("---- "+ie.getItem().isInStock());
+	    			break;
+	    		}
+	    	}
+	    	responseList.add(new WishListResponse(ie, stores, true));	
 		}
-	  //  BaseResponse response = (BaseResponse) responseList;
 	    return new ResponseEntity<List<WishListResponse>>(responseList, HttpStatus.OK);
-	  //  return new ResponseEntity<BaseResponse>(response, HttpStatus.OK);
 	  }
 
 	  @RequestMapping(value = "/add", method = RequestMethod.POST)

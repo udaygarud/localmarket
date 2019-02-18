@@ -14,6 +14,7 @@ import com.google.common.base.Strings;
 import com.lmp.app.entity.Inventory;
 import com.lmp.app.entity.Item;
 import com.lmp.app.entity.ProductInformation;
+import com.lmp.app.entity.StoreInformation;
 import com.lmp.app.entity.StoreInventoryV2;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
@@ -187,7 +188,15 @@ public class StoreInventoryController extends BaseController {
     ProductInformation productInfo = new ProductInformation();
     Map<String,List<String>> stores = new HashMap<>();
     for(int i=0 ;i<items.size();i++){
-    	List<String> list = service.getStores(items.get(i).getId());
+    	List<StoreInformation> storeInfo = service.getStoreswithInfo(items.get(i).getId());
+    	List<String> list = new ArrayList<>();
+    	
+    	for(StoreInformation store : storeInfo){
+    		if(store.getStock()>0){
+    			items.get(i).setInStock(true);
+    		}
+    		list.add(store.getStoreId());
+    	}
       stores.put(items.get(i).getId(), list);
       productInfo.setItem(items.get(i));	
       productInfo.setStores(list);
@@ -204,7 +213,6 @@ public class StoreInventoryController extends BaseController {
     }
     logger.debug("no stores found nearby lat {} & lng {}", uploadRequest.toString());
     ItemEntity response = itemservice.findByUpc(uploadRequest.getUpc());
-    System.out.println("stokkkkkkkkk "+uploadRequest.getStock());
     StoreItemEntity item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
     if (item == null) {
       StoreItemEntity sItem = new StoreItemEntity();
@@ -230,11 +238,7 @@ public class StoreInventoryController extends BaseController {
       }
     }
     item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
-
-    System.out.println("stokkkkkkkkk "+item.getStock());
-    System.out.println("stokkkkkkkkk upload "+uploadRequest.getStock());
     service.updateStockCountafterInventoryUpdate(item, uploadRequest.getStock());
-    System.out.println(item.getStock());
     // return new ResponseEntity<String>("Uploaded inventory", HttpStatus.OK);
     return new ResponseEntity<CartResponse>(
         BaseResponse.responseStatus(com.lmp.app.entity.ResponseStatus.MOVED_TO_LIST), HttpStatus.OK);

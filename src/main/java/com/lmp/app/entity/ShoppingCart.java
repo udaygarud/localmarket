@@ -108,6 +108,7 @@ public class ShoppingCart {
         existing.changeQuantities(quantity);
       }
     } else {
+    	
       item.setQuantity(quantity);
       item.setItem(ie);
       items.add(item);

@@ -35,6 +35,7 @@ private float list_price;
   @JsonIgnore
   private String available_to_purchase_date_time;
   private List<Image> images;
+  private boolean inStock;
 
   /**
    * check if item can be listed on store inventory
@@ -56,7 +57,16 @@ private float list_price;
     }
     return false;
   }
-  public String getId() {
+  
+  public boolean isInStock() {
+	return inStock;
+}
+
+public void setInStock(boolean inStock) {
+	this.inStock = inStock;
+}
+
+public String getId() {
     return id;
   }
   public void setId(String id) {

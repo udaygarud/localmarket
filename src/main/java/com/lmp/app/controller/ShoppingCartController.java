@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.common.base.Strings;
 import com.lmp.app.entity.CustomerOrder;
 import com.lmp.app.entity.ShoppingCart;
+import com.lmp.app.entity.ShoppingCart.CartItem;
 import com.lmp.app.model.BaseResponse;
 import com.lmp.app.model.CartResponse;
 import com.lmp.app.model.CheckoutRequest;
@@ -56,7 +57,11 @@ public class ShoppingCartController extends BaseController {
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> getCart(@Valid @RequestParam("id") String id) {
     logger.info("getting cart with id {} " + id);
-    return new ResponseEntity<ShoppingCart>(service.getCart(id), HttpStatus.OK);
+    ShoppingCart cart = service.getCart(id);
+    for(CartItem item : cart.getItems()){
+    	item.getItem().getItem().setInStock(item.getItem().getStock()>0);
+    }
+    return new ResponseEntity<ShoppingCart>(cart, HttpStatus.OK);
   }
 
   @RequestMapping(value = "/add", method = RequestMethod.POST)

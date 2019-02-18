@@ -1,6 +1,7 @@
 package com.lmp.solr;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -76,6 +77,7 @@ public class SolrSearchService {
       return Page.empty();
     }
     Criteria conditions = addSearchConditions(sRequest, storesIds);
+    System.out.println("conditions ---------- "+conditions.toString());
     SimpleQuery query = new SimpleQuery(conditions, sRequest.pageRequesst());
     if (sRequest.getFields() != null && sRequest.getFields().size() > 0) {
       // add mandetory field
@@ -91,11 +93,20 @@ public class SolrSearchService {
   }
 
   public List<KeywordDoc> searchKeywords(String q) {
+	  
     Page<KeywordDoc> docs = keyWordRepo.findByKeyword(q);
     if (docs != null) {
       return docs.getContent();
     }
     return new ArrayList<KeywordDoc>();
+  }
+  
+  public Iterator<KeywordDoc> getAllKeywords(){
+	  Iterable<KeywordDoc> docs = keyWordRepo.findAll();
+	    if (docs != null) {
+	      return docs.iterator();
+	    }
+	    return  null;
   }
 
   @Cacheable("solr-facet-docs")

@@ -77,12 +77,22 @@ public class AutoCompleteService {
   }
   public void addsuggestKeywords(ItemEntity sItem){
 	  Set<KeywordDoc> tokens = new HashSet<>();
+	  Set<String> allTokens = new HashSet<>();
+	  Iterator<KeywordDoc> docs = solrService.getAllKeywords();
+	  while(docs.hasNext()){
+		  allTokens.add(docs.next().getOriginal());
+	  }
 	  for(String cat : sItem.getCategories()) {
           // highest priority in auto complete
-          tokens.add(new KeywordDoc(cat, 0));
+		  if(allTokens.add(cat)){
+			  tokens.add(new KeywordDoc(cat, 0));
+		  }
+          
         }
         // second highest priority in auto complete
+	  if(allTokens.add(sItem.getBrand())){
         tokens.add(new KeywordDoc(sItem.getBrand(), 1));
+	  }
         // lowest priority in auto complete, priority 5
        // tokens.add(new KeywordDoc(sItem.getTitle()));
         for (KeywordDoc token : tokens) {
