@@ -186,20 +186,18 @@ public class StoreInventoryController extends BaseController {
     
     List<ProductInformation> prodList =new ArrayList<ProductInformation>();   
     ProductInformation productInfo = new ProductInformation();
-    Map<String,List<String>> stores = new HashMap<>();
+    Map<String,List<StoreInformation>> stores = new HashMap<>();
     for(int i=0 ;i<items.size();i++){
-    	List<StoreInformation> storeInfo = service.getStoreswithInfo(items.get(i).getId());
-    	List<String> list = new ArrayList<>();
+    	List<StoreInformation> storeList = service.getStoreswithInfo(items.get(i).getId());
     	
-    	for(StoreInformation store : storeInfo){
+    	for(StoreInformation store : storeList){
     		if(store.getStock()>0){
     			items.get(i).setInStock(true);
     		}
-    		list.add(store.getStoreId());
     	}
-      stores.put(items.get(i).getId(), list);
+      stores.put(items.get(i).getId(), storeList);
       productInfo.setItem(items.get(i));	
-      productInfo.setStores(list);
+      productInfo.setStores(storeList);
       prodList.add(productInfo);
    }
     return new ResponseEntity<List<ProductInformation>>(prodList, HttpStatus.OK);
@@ -312,8 +310,6 @@ public class StoreInventoryController extends BaseController {
         siRepo.save(sItem);
       }
       item = service.findByStoreIdanditemid(uploadRequest.getStoreId(), response.getId());
-      System.out.println("stokkkkkkkkk "+item.getStock());
-      System.out.println("stokkkkkkkkk upload "+uploadRequest.getStock());
       service.updateStockCountafterInventoryUpdate(item, uploadRequest.getStock());
       
       autoCService.addsuggestKeywords(response);

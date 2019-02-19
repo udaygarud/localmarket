@@ -7,17 +7,17 @@ import com.lmp.db.pojo.ItemEntity;
 
 public class ProductInformation {
 	private ItemEntity item;
-	  private List<String> stores = new ArrayList<>();
+	  private List<StoreInformation> stores = new ArrayList<>();
 	public ItemEntity getItem() {
 		return item;
 	}
 	public void setItem(ItemEntity item) {
 		this.item = item;
 	}
-	public List<String> getStores() {
+	public List<StoreInformation> getStores() {
 		return stores;
 	}
-	public void setStores(List<String> stores) {
+	public void setStores(List<StoreInformation> stores) {
 		this.stores = stores;
 	}
 	
