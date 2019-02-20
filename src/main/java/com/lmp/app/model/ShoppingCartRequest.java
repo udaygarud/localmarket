@@ -7,6 +7,7 @@ public class ShoppingCartRequest {
   private int quantity;
   private String storeId;
   private boolean clearFirst;
+  
 
   public ShoppingCartRequest() {
   }

@@ -90,7 +90,7 @@ public class ShoppingCartService {
     }
     // requested item from different store
    // System.out.println("---- "+cart.getItems().get(0).g);
-    if(cart.getStoreId() != null && !cart.getStoreId().equals(item.getStoreId())) {
+    if(cart.getStoreId() != null && !cart.getStoreId().equals(cartRequest.getStoreId())) {
       // if force flag is true then clear the current cart and add incoming item
       if(cartRequest.isClearFirst()) {
         clear(cart);

@@ -82,6 +82,7 @@ public class AutoCompleteService {
 	  while(docs.hasNext()){
 		  allTokens.add(docs.next().getOriginal());
 	  }
+	  
 	  for(String cat : sItem.getCategories()) {
           // highest priority in auto complete
 		  if(allTokens.add(cat)){
