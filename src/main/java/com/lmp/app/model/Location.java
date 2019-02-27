@@ -23,7 +23,10 @@ public class Location {
       if(coordinates == null || coordinates.length < 2) {
         Assert.notNull(coordinates, "coordinates must not be null or less than 2!");
       }
+      System.out.println("lat "+coordinates[0]);
+      System.out.println("long "+coordinates[1]);
       if(coordinates[0] > coordinates[1]) {
+    	  
         double temp = coordinates[0];
         coordinates[0] = coordinates[1];
         coordinates[1] = temp;

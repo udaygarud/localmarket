@@ -92,6 +92,7 @@ public class StoreInventoryService {
       List<String> ids = new ArrayList<>();
       docs.getContent().forEach(itemDoc -> {
         ids.add(itemDoc.getId());
+       
       });
       // search items in solr first then retrieve those from MongoDB
       logger.info("going for mongo with {}", ids.toString());
@@ -102,8 +103,10 @@ public class StoreInventoryService {
         items = repo.findAllByStoreIdInAndItemIdIn(storeIds, ids, new PageRequest(0, sRequest.getRows()));
       }
       Map<String,List<StoreInformation>> storemap = new HashMap<>();
+      System.out.println("items found "+items.getNumberOfElements());
       for(StoreItemEntity ie : items) {
        // List<String> Dbstores = getStores(ie.getItem().getId());
+    	  System.out.println("items "+ie.getItem().getCategories());
     	  List<StoreInformation> Dbstores = getStoreswithInfo(ie.getItem().getId());
         List<StoreInformation> filteredstores = new ArrayList<>();
         for (StoreInformation storeInformation : Dbstores) {
@@ -157,10 +160,11 @@ public class StoreInventoryService {
         storeIdsToSearch.add(id.trim());
       }
     }
-    Page<ItemDoc> docs = null;    if (sRequest.isSolrSearchNeeded()) {
+    Page<ItemDoc> docs = null;    
+    if (sRequest.isSolrSearchNeeded()) {
       // search solr and then mongo for this request
-      System.out.println("solar search");
       docs = searchSolr(sRequest, storeIdsToSearch);
+      System.out.println("no of elements "+docs.getNumberOfElements());
       if(docs == null || docs.getTotalElements() == 0) {
         return SearchResponse.empty();
       }
@@ -318,7 +322,7 @@ public class StoreInventoryService {
    
    public List<StoreInformation> getStoreswithInfo(String itemid){
 	    List<StoreItemEntity> result = repo.findByItemId(itemid);
-	    
+	    System.out.println("---- "+itemid);
 	    List<StoreInformation> storeInfo = new ArrayList<>();
 	    if(result!=null){
 	      result.forEach(item ->{
@@ -327,6 +331,7 @@ public class StoreInventoryService {
 	    	  store.setOnSale(item.isOnSale());
 	    	  store.setOfferPrice(item.getSalePrice());
 	    	  store.setStock(item.getStock());
+	    	  store.setItemId(item.getId());
 	    	  if(item.getStock()>0){
 	    		  store.setInStock(true);
 	    	  }else {
@@ -417,5 +422,6 @@ public class StoreInventoryService {
 	  repo.deleteById(id);
 	  return true;
   }
+ 
 
 }

@@ -98,6 +98,7 @@ public class ShoppingWishService {
 	    			for (WishItem ie : cart.getItems()) {
 						list.add(ie.getItem().getId());
 					}
+	    			System.out.println("list "+storeItem.get().getItem());
 	    			if(list.contains(storeItem.get().getItem().getId())){
 	    				
 	    			} else {

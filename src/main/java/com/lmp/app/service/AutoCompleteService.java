@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
 import com.lmp.db.pojo.ItemEntity;
 import com.lmp.db.pojo.StoreItemEntity;
 import com.lmp.solr.SolrSearchService;
@@ -82,20 +83,28 @@ public class AutoCompleteService {
 	  while(docs.hasNext()){
 		  allTokens.add(docs.next().getOriginal());
 	  }
+	  List<String> catList = new ArrayList<>(sItem.getCategories());
+	  catList.get(catList.size()-1);
+	  if(allTokens.add(Iterables.getLast(sItem.getCategories()))){
+		  tokens.add(new KeywordDoc(Iterables.getLast(sItem.getCategories()), 0));
+	  }
 	  
-	  for(String cat : sItem.getCategories()) {
-          // highest priority in auto complete
-		  if(allTokens.add(cat)){
-			  tokens.add(new KeywordDoc(cat, 0));
-		  }
-          
-        }
+//	  for(String cat : sItem.getCategories()) {
+//          // highest priority in auto complete
+//		  if(allTokens.add(cat)){
+//			  tokens.add(new KeywordDoc(cat, 0));
+//		  }
+//          
+//        }
         // second highest priority in auto complete
 	  if(allTokens.add(sItem.getBrand())){
         tokens.add(new KeywordDoc(sItem.getBrand(), 1));
 	  }
         // lowest priority in auto complete, priority 5
-       // tokens.add(new KeywordDoc(sItem.getTitle()));
+	  if(allTokens.add(sItem.getTitle())){
+		 tokens.add(new KeywordDoc(sItem.getTitle()));
+	  }
+       
         for (KeywordDoc token : tokens) {
             indexer.addKeyWord(token);
           }

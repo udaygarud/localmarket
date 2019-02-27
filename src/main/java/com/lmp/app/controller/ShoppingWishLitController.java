@@ -93,9 +93,6 @@ public class ShoppingWishLitController extends BaseController{
 	    if (errors.hasErrors()) {
 	      return ResponseEntity.badRequest().body(ValidationErrorBuilder.fromBindingErrors(errors));
 	    }
-	    System.out.println("add in wish list");
-	    logger.info("shopping wish list request " + shoppingWishListRequest.toString());
-	    System.out.println(" in wish ");
 	    ShoppingWishList cart = service.add(shoppingWishListRequest);
 	    if (cart == null) {
 	      logger.info("no cart found or add failed {}", shoppingWishListRequest.toString());

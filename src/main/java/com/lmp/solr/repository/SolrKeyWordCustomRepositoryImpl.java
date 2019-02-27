@@ -26,7 +26,8 @@ public class SolrKeyWordCustomRepositoryImpl implements SolrKeyWordCustomReposit
       return Page.empty();
     }
     SimpleQuery query = new SimpleQuery();
-    query.addCriteria(QueryUtils.andQuery("keyword", q.trim().toLowerCase()));
+    //query.addCriteria(QueryUtils.andQuery("keyword", q.trim().toLowerCase()));
+    query.addCriteria(QueryUtils.andQuerySuggest("keyword", q.trim().toLowerCase()));
     query.addSort(Sort.by("priority"));
     query.setOffset(0L);
     query.setRows(10);

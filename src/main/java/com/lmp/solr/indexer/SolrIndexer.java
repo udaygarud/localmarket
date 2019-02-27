@@ -43,7 +43,15 @@ public class SolrIndexer {
     if (item == null) {
       return;
     }
-    repository.save(ItemDoc.fromItem(item, storeids).setMinPrice(minPrice).setMaxPrice(maxPrice));
+    ItemDoc itemdoc = repository.findByUpc(item.getUpc());
+    if (itemdoc != null){
+    	itemdoc.setStores(itemdoc.getStores()+" "+storeids);
+    	itemdoc.setMinPrice(Math.min(itemdoc.getMinPrice(), minPrice));
+    	itemdoc.setMaxPrice(Math.max(itemdoc.getMaxPrice(), maxPrice));
+    } else {
+    	itemdoc = ItemDoc.fromItem(item, storeids).setMinPrice(minPrice).setMaxPrice(maxPrice);
+    }
+    repository.save(itemdoc);
   }
 
   @Transactional

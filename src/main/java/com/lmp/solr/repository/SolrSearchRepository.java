@@ -8,4 +8,5 @@ public interface SolrSearchRepository extends SolrCrudRepository<ItemDoc, String
 
 //  @Query("brand:0* OR categories_suggestion_text:0*")
 //  public List<ItemDoc> findByBrandORCategories(String query);
+	public ItemDoc findByUpc(long upc);
 }

@@ -169,7 +169,9 @@ public class StoreController extends BaseController {
     	entity.setName(storeRequest.getName());
     	entity.setFranchise(storeRequest.getFranchise());
     	entity.setPhoneNumber(storeRequest.getPhoneNumber());
+    	
     	entity.setAddress(storeRequest.getAddress());
+    	entity.setLocation(storeRequest.getLocation());
     	storeRepo.save(entity);
        }
     else {

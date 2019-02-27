@@ -6,6 +6,14 @@ public class StoreInformation {
     private double offerPrice;
     private int stock;
     private boolean inStock;
+    private String itemId;
+    
+	public String getItemId() {
+		return itemId;
+	}
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
 	public String getStoreId() {
 		return storeId;
 	}

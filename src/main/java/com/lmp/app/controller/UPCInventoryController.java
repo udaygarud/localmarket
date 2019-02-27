@@ -74,6 +74,7 @@ public class UPCInventoryController extends BaseController {
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<?> lookupByText(@PathVariable("q") String q) {
     logger.debug("searching for query: {}", q);
+    System.out.println("suggest search "+q);
     List<String> list = acService.suggest(q);
     SearchResponse<String> response = new SearchResponse<>();
     response.setResults(list);

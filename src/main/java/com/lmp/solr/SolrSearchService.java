@@ -50,7 +50,8 @@ public class SolrSearchService {
       conditions = conditions.connect().and(QueryUtils.oRIsQuery(ItemField.BRAND, sRequest.brandFilter()));
     }
     if (sRequest.categoryFilter() != null) {
-      conditions = conditions.connect().and(QueryUtils.oRIsQuery(ItemField.CATEGORIES, sRequest.categoryFilter()));
+    	System.out.println("check "+conditions);
+    	conditions = conditions.connect().and(QueryUtils.oRIsQuery(ItemField.CATEGORIES, sRequest.categoryFilter()));
     }
     if (sRequest.upcFilter() != null) {
       conditions = conditions.connect().and(QueryUtils.oRIsQuery(ItemField.UPC, sRequest.upcFilter()));

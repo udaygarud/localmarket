@@ -42,8 +42,9 @@ public class ShoppingCart {
   //  private List<Image> images;
     private String storeId;
     private int quantity;
+    private float price;
     private boolean saveForLater;
-
+    
     public CartItem changeQuantities(int change) {
       this.quantity += change;
       this.quantity = Math.max(0, this.quantity);
@@ -67,11 +68,19 @@ public class ShoppingCart {
 //    public void setStock(int stock) {
 //      this.stock = stock;
 //    }
-
+    
+    
+    
     public boolean isSaveForLater() {
       return saveForLater;
     }
-    public void setSaveForLater(boolean saveForLater) {
+    public float getPrice() {
+		return price;
+	}
+	public void setPrice(float price) {
+		this.price = price;
+	}
+	public void setSaveForLater(boolean saveForLater) {
       this.saveForLater = saveForLater;
     }
     public int getQuantity() {
@@ -107,10 +116,11 @@ public class ShoppingCart {
       } else {
         existing.changeQuantities(quantity);
       }
+      existing.setPrice(ie.getSalePrice());
     } else {
-    	
       item.setQuantity(quantity);
       item.setItem(ie);
+      item.setPrice(ie.getSalePrice());
       items.add(item);
     }
   }
