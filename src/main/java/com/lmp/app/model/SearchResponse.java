@@ -76,7 +76,7 @@ public class SearchResponse<T> extends BaseResponse {
 	  for(WishItem wishItem : list){
 		 // System.out.println("wish list id "+wishItem.getId());
 		  //System.out.println("wish list id 2 "+wishItem.getItem().getId());
-		  wishListIds.add(wishItem.getId());
+		  wishListIds.add(wishItem.getItem().getId());
 	  }
 	   for(StoreItemEntity ie : items) {
 	     Item item = Item.fromStoreInventoryEntity(ie);
@@ -88,7 +88,7 @@ public class SearchResponse<T> extends BaseResponse {
 		             ((StoreInventoryV2)map.get(ie.getId())).addStore(storeInformation);
 		           }else{
 		        	   map.put(item.getId(), new StoreInventoryV2(item, storeInformation,false));
-		        	 if(wishListIds.contains(item.getId())){
+		        	 if(wishListIds.contains(ie.getItem().getId())){
 		        		 System.out.println("present is wishlist ");
 		        		 map.put(item.getId(), new StoreInventoryV2(item, storeInformation,true));
 		        	 } else {
