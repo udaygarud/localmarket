@@ -2,6 +2,7 @@ package com.lmp.app.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -75,9 +76,9 @@ public class UPCInventoryController extends BaseController {
   public ResponseEntity<?> lookupByText(@PathVariable("q") String q) {
     logger.debug("searching for query: {}", q);
     System.out.println("suggest search "+q);
-    List<String> list = acService.suggest(q);
+    Set<String> list = acService.suggest(q);
     SearchResponse<String> response = new SearchResponse<>();
-    response.setResults(list);
+    response.setSuggestResults(list);
     return new ResponseEntity<SearchResponse>(response, HttpStatus.OK);
   }
 

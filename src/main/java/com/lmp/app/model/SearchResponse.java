@@ -159,6 +159,10 @@ public class SearchResponse<T> extends BaseResponse {
   public void setResults(List<T> results) {
     this.results = results;
   }
+  
+  public void setSuggestResults(Set<T> results){
+	  this.results = results;
+  }
 
   public long getFound() {
     return found;

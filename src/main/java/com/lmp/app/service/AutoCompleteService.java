@@ -31,16 +31,17 @@ public class AutoCompleteService {
   @Autowired
   private SolrSearchService solrService;
 
-  public List<String> suggest(String q) {
+  public Set<String> suggest(String q) {
     List<String> result = new ArrayList<>();
+    Set<String> results = new HashSet<>();
     if(Strings.isNullOrEmpty(q)) {
-      return result;
+      return results;
     }
     List<KeywordDoc> keywords = solrService.searchKeywords(q);
     for (KeywordDoc keywordDoc : keywords) {
-      result.add(keywordDoc.getOriginal());
+    	results.add(keywordDoc.getOriginal());
     }
-    return result;
+    return results;
   }
   public void buildAutoCompleteCollection() {
     int page = 0;
@@ -83,9 +84,9 @@ public class AutoCompleteService {
 	  while(docs.hasNext()){
 		  allTokens.add(docs.next().getOriginal());
 	  }
-	  List<String> catList = new ArrayList<>(sItem.getCategories());
-	  catList.get(catList.size()-1);
+	  System.out.println("category "+Iterables.getLast(sItem.getCategories()));
 	  if(allTokens.add(Iterables.getLast(sItem.getCategories()))){
+		  System.out.println("added");
 		  tokens.add(new KeywordDoc(Iterables.getLast(sItem.getCategories()), 0));
 	  }
 	  
